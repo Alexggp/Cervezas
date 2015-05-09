@@ -1,0 +1,13 @@
+body {
+   width: 100%;
+   heigth: 100%;
+}
+
+#container{
+    width: 90%;
+    height: 100%;
+}
+#game{
+    width: 75%;
+    height: 75%;
+}
