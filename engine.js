@@ -18,12 +18,14 @@ var Game = new function() {
     // Inicializa el juego
     this.initialize = function(canvasElementId,sprite_data,callback) {
 	this.canvas = document.getElementById(canvasElementId);
-	this.container = document.getElementById(container);
 	this.canvas.width = this.canvas.offsetWidth;
 	this.canvas.height = this.canvas.offsetHeight;
 	this.width = this.canvas.width;
 	this.height= this.canvas.height;
 
+	this.points=0;
+	
+	
 	this.ctx = this.canvas.getContext && this.canvas.getContext('2d');
 	if(!this.ctx) { return alert("Please upgrade your browser to play"); }
 
@@ -244,15 +246,24 @@ var GameBoard = function() {
     // inicializa la lista de objetos pendientes de borrar, y después
     // se borran los que hayan aparecido en dicha lista
     this.step = function(dt) { 
-	this.resetRemoved();
-	this.iterate('step',dt);
-	this.finalizeRemoved();
+		this.resetRemoved();
+		this.iterate('step',dt);
+		this.finalizeRemoved();
+		
+		if (this.objects.length==0) {
+                                  
+            var nextTrhowNumber = Math.floor((Math.random() * (4-1)) + 1);
+            for (i=0; i<nextTrhowNumber; i++) {
+                this.add(new Throw());
+            }
+        }
+		
     };
 
     // Cuando Game.loop() llame a draw(), hay que llamar al método
     // draw() de todos los objetos contenidos en el tablero
     this.draw= function(ctx) {
-	this.iterate('draw',ctx);
+		this.iterate('draw',ctx);
     };
 
     // Comprobar si hay intersección entre los rectángulos que
@@ -286,7 +297,6 @@ var mouse ={
   },
   mousedownhandler:function(ev){
 	
-	console.log(ev)
 	var offset = $('#game').offset();
     mouse.x= ev.pageX - offset.left;
     mouse.y= ev.pageY - offset.top;
@@ -297,30 +307,106 @@ var mouse ={
     ev.originalEvent.preventDefault();
   },
   mouseuphandler:function(ev){
-    mouse.down = false;  
+    mouse.down = false;
+	mouse.current= undefined; 
   },
   checkMouse:function(object){
-	  
-	  if (mouse.down) {
-		console.log('x',object.x,'y', object.y, 'mouse', 'h', object.h, mouse.x,'-',mouse.y);
-	  }
-	  
-	  
+	    
+	  //Si pinchamos dentro del objeto entramos
       if (mouse.down && mouse.x > object.x && mouse.x < object.x+object.w && mouse.y > object.y 
-                                      && mouse.y < object.y+object.h){
+                                      && mouse.y < object.y+object.h && !mouse.current){
 		
-		
+		mouse.current=true;
         return true;
 	  }
-        // Se supone que hemos pinchado en el objeto que se ha lanzado
-        //var listaAux=[];
-        //for (cont in prenda.board.objects){
-        //  if (prenda.board.objects[cont] != prenda){listaAux.push(prenda.board.objects[cont])}
-        //}
-        //listaAux.push(prenda);
-        //prenda.board.objects=listaAux;
+        
 
       
   },
 };
+
+// Constructor Sprite 
+var Sprite = function() { }
+
+Sprite.prototype.setup = function(sprite,props) {
+    this.sprite = sprite;
+    this.merge(props);
+    this.frame = this.frame || 0;
+    this.w =  SpriteSheet.map[sprite].w;
+    this.h =  SpriteSheet.map[sprite].h;
+}
+
+Sprite.prototype.merge = function(props) {
+    if(props) {
+	      for (var prop in props) {
+	          this[prop] = props[prop];
+	      }
+    }
+}
+
+Sprite.prototype.draw = function(ctx) {
+    SpriteSheet.draw(ctx,this.sprite,this.x,this.y,this.frame);
+}
+
+
+var Clock = function(seg,callback) {     //si reg = true cuenta regresiva
+  
+  
+  var cuenta= function(){
+      seg--;
+      if (seg>0) {
+		setTimeout(function(){cuenta()},1000)
+	  }else{
+		callback();
+	  }
+    }
+
+  cuenta();
+
+  this.draw = function(ctx) {
+    var oy= 90;
+    if (seg <6 ){
+        ctx.font = "bold 100px arial";
+        ctx.fillStyle= "red";
+        oy= 130;
+    }else if (seg<11){  
+        ctx.font = "bold 30px arial";
+        ctx.fillStyle= "red";
+    }else {
+        ctx.font = "bold 30px arial";
+        ctx.fillStyle= "#FFFFFF";
+    }
+    
+
+    var txt =  seg + "\'\'" ;
+
+    ctx.fillText(txt,Game.width/2,oy);
+    ctx.restore();
+
+  };
+
+  this.step = function(dt) {};
+};
+
+
+var GamePoints = function(x) {
+  Game.points  = x;
+
+
+  this.draw = function(ctx) {
+    ctx.font = "bold 30px arial";
+    ctx.fillStyle= "#FFFFFF";
+
+    var txt = 'Points: '+Game.points;
+
+
+    ctx.fillText(txt,Game.width/2,50 - 10);
+    ctx.restore();
+
+  };
+
+  this.step = function(dt) { };
+};
+
+
 

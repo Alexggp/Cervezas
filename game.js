@@ -1,28 +1,38 @@
 
 sprites = {
-    bottle: { sx: 0, sy: 0, w: 58, h: 200, frames: 1 },
-   
+    bottle: { sx: 0, sy: 0, w: 57, h: 200, frames: 3 },
+    chapa: { sx: 0, sy: 210, w: 40, h: 40, frames: 4 }
 };
 
 
 
 var startGame = function() {
     Game.setBoard(0,new capaClear(0))
-    Game.setBoard(1,new TitleScreen("Acepta el reto!!!", 
-                                    "Si eres el que mas cervezas abre, premio asegurado",
+    Game.setBoard(1,new TitleScreen("HOW MANY BOTTLES CAN YOU OPEN???", 
+                                    "PRESS THE SPACE BAR TO PLAY",
                                     playGame));
 }
 
 
 var playGame = function() {
+    //Añadidos el reloj y el marcador, si el marcador llega a 0, callback=startGame()
+    Game.setBoard(3,new Clock(30, endGame));
+    Game.setBoard(4,new GamePoints(0));
+    
     var board = new GameBoard();
-    board.add(new Throw());
-    
+    board.add(new Throw(420,400));
+    //board.add(new Chapa(400,400));
+
     Game.setBoard(1,board);
-    
+
     
 }
+var endGame = function(){
 
+    Game.setBoard(1,new TitleScreen("GAME OVER!!!!", 
+                                    "PRESS TO PLAY AGAIN",
+                                    playGame));
+}
 
 
 
@@ -37,9 +47,6 @@ var capaClear = function() {
 
     var capaCtx = capa.getContext("2d");
 
- 
-	  //capaCtx.fillStyle = "#101010";
-	  //capaCtx.fillRect(0,0,capa.width,capa.height);
 	var background = new Image();
     background.src = "images/background.png";
     
@@ -57,13 +64,12 @@ var capaClear = function() {
 
 // La clase Throw tambien ofrece la interfaz step(), draw() para
 // poder ser dibujada desde el bucle principal del juego
-var Throw = function() { 
+var Throw = function(xx,yy) {
     
+    this.setup('bottle', {frame:0, reloadTime:0.25});
+    this.subFrame = 0;
+    this.captured=false;   //indica si hemos pinchado en el objeto
     
-    
-    
-    this.w =  SpriteSheet.map['bottle'].w;
-    this.h =  SpriteSheet.map['bottle'].h;
     
     // factor de direccion, decide de que lado de la pantalla sale el objeto
     this.d = Math.random() < 0.5 ? -1 : 1;
@@ -91,25 +97,14 @@ var Throw = function() {
     
     this.deleteObject= function(){
         this.board.remove(this);      // lo eliminamos de la lista de objetos del board
-                     
-        //Si es el ultimo objeto de la lista, al eliminarlo realizamos un nuevo lanzamiento
-        //Lanzará entre 1 y 3 objetos. 
-        
-        if (this.board.objects.length==1) {
-                                  
-            var nextTrhowNumber = Math.floor((Math.random() * (4-1)) + 1);
-            for (i=0; i<nextTrhowNumber; i++) {
-                this.board.add(new Throw());
-            }
-        }
     }
 
  
     this.step = function(dt) {    
             this.x += this.vx * dt;
             this.y += this.vy * dt;
-            //this.x =400;
-            //this.y = 400;
+            //this.x =xx;
+            //this.y = yy;
             
             this.vy=this.vy+this.G; // cuando vy deja de ser negativo, el objeto dejara de subir y caera.
             
@@ -118,17 +113,38 @@ var Throw = function() {
                 this.deleteObject();                       
             }
             if(mouse.checkMouse(this)){
-                this.deleteObject(); 
+                
+                this.captured=true;
+                Game.points++;
+                
             }
-    }
-	
+            if (this.captured & this.frame<2){ //si capturamos la botella, secuencia de imagenes de descorche
+                this.frame = Math.floor(this.subFrame++ /5);
+            }
 
-    this.draw = function(ctx) {
-        SpriteSheet.draw(ctx,'bottle',this.x,this.y,0);
+            
+            
     }
 }
 
 
+Throw.prototype = new Sprite();
+
+var Chapa = function(ox,oy){
+    this.setup('chapa', {frame:2, reloadTime:0.25});
+    this.y=oy;
+    this.x=ox;
+    this.subFrame = 0;
+    this.step = function(dt) {
+    //this.frame = Math.floor(this.subFrame++ /75);
+    //  if(this.subFrame >= 300) {
+    //  this.board.remove(this);
+    //}
+
+    }
+}
+Chapa.prototype = new Sprite();
+    
 
 $(function() {
     Game.initialize("game",sprites,startGame);
