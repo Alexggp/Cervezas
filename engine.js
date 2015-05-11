@@ -17,7 +17,10 @@ var Game = new function() {
 
     // Inicializa el juego
     this.initialize = function(canvasElementId,sprite_data,callback) {
-	this.canvas = document.getElementById(canvasElementId)
+	this.canvas = document.getElementById(canvasElementId);
+	this.container = document.getElementById(container);
+	this.canvas.width = this.canvas.offsetWidth;
+	this.canvas.height = this.canvas.offsetHeight;
 	this.width = this.canvas.width;
 	this.height= this.canvas.height;
 
@@ -28,14 +31,15 @@ var Game = new function() {
 
 	this.loop(); 
 
+	//Iniciamos los handlers del mouse
+	mouse.init(); 
 	SpriteSheet.load (sprite_data,callback);
     };
 
     // Gestión de la entrada (teclas para izda/derecha y disparo)
     var KEY_CODES = { 37:'left', 39:'right', 32 :'fire' };
     this.keys = {};
-
-    this.setupInput = function() {
+	this.setupInput = function() {
 	$(window).keydown(function(event){
 	    if (KEY_CODES[event.which]) {
 		Game.keys[KEY_CODES[event.which]] = true;
@@ -52,7 +56,7 @@ var Game = new function() {
 	
     }
 
-
+	
     // Bucle del juego
     var boards = [];
 
@@ -264,16 +268,59 @@ var GameBoard = function() {
     // Si se llama sin type, en contrar el primer objeto de cualquier
     // tipo que colisiona con obj
     this.collide = function(obj,type) {
-	return this.detect(function() {
-	    if(obj != this) {
-		var col = (!type || this.type & type) && board.overlap(obj,this)
-		return col ? this : false;
-	    }
-	});
+		return this.detect(function() {
+			if(obj != this) {
+			var col = (!type || this.type & type) && board.overlap(obj,this)
+			return col ? this : false;
+			}
+		});
     };
-
-
-
 };
+var mouse ={
+  x:0,
+  y:0,
+  down:false,
+  init:function(){
+      $('#game').mousedown(mouse.mousedownhandler);
+      $('#game').mouseup(mouse.mouseuphandler);
+  },
+  mousedownhandler:function(ev){
+	
+	console.log(ev)
+	var offset = $('#game').offset();
+    mouse.x= ev.pageX - offset.left;
+    mouse.y= ev.pageY - offset.top;
+	
+    mouse.down = true;
+    mouse.downX = mouse.x;
+    mouse.downY = mouse.y;
+    ev.originalEvent.preventDefault();
+  },
+  mouseuphandler:function(ev){
+    mouse.down = false;  
+  },
+  checkMouse:function(object){
+	  
+	  if (mouse.down) {
+		console.log('x',object.x,'y', object.y, 'mouse', 'h', object.h, mouse.x,'-',mouse.y);
+	  }
+	  
+	  
+      if (mouse.down && mouse.x > object.x && mouse.x < object.x+object.w && mouse.y > object.y 
+                                      && mouse.y < object.y+object.h){
+		
+		
+        return true;
+	  }
+        // Se supone que hemos pinchado en el objeto que se ha lanzado
+        //var listaAux=[];
+        //for (cont in prenda.board.objects){
+        //  if (prenda.board.objects[cont] != prenda){listaAux.push(prenda.board.objects[cont])}
+        //}
+        //listaAux.push(prenda);
+        //prenda.board.objects=listaAux;
 
+      
+  },
+};
 

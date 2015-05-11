@@ -1,6 +1,6 @@
 
 sprites = {
-    ship: { sx: 0, sy: 0, w: 58, h: 200, frames: 1 },
+    bottle: { sx: 0, sy: 0, w: 58, h: 200, frames: 1 },
    
 };
 
@@ -16,7 +16,7 @@ var startGame = function() {
 
 var playGame = function() {
     var board = new GameBoard();
-    board.add(new PlayerShip());
+    board.add(new Throw());
     
     Game.setBoard(1,board);
     
@@ -55,15 +55,15 @@ var capaClear = function() {
 }
 
 
-// La clase PlayerShip tambien ofrece la interfaz step(), draw() para
+// La clase Throw tambien ofrece la interfaz step(), draw() para
 // poder ser dibujada desde el bucle principal del juego
-var PlayerShip = function() { 
+var Throw = function() { 
     
     
     
     
-    this.w =  SpriteSheet.map['ship'].w;
-    this.h =  SpriteSheet.map['ship'].h;
+    this.w =  SpriteSheet.map['bottle'].w;
+    this.h =  SpriteSheet.map['bottle'].h;
     
     // factor de direccion, decide de que lado de la pantalla sale el objeto
     this.d = Math.random() < 0.5 ? -1 : 1;
@@ -99,7 +99,7 @@ var PlayerShip = function() {
                                   
             var nextTrhowNumber = Math.floor((Math.random() * (4-1)) + 1);
             for (i=0; i<nextTrhowNumber; i++) {
-                this.board.add(new PlayerShip());
+                this.board.add(new Throw());
             }
         }
     }
@@ -108,18 +108,23 @@ var PlayerShip = function() {
     this.step = function(dt) {    
             this.x += this.vx * dt;
             this.y += this.vy * dt;
+            //this.x =400;
+            //this.y = 400;
             
             this.vy=this.vy+this.G; // cuando vy deja de ser negativo, el objeto dejara de subir y caera.
             
             // Si el objeto sale de la pantalla lo eliminamos de la lista de objetos
             if(this.y > Game.height || this.x< -this.w || this.x > Game.width) {                   
                 this.deleteObject();                       
-            }      
+            }
+            if(mouse.checkMouse(this)){
+                this.deleteObject(); 
+            }
     }
 	
 
     this.draw = function(ctx) {
-        SpriteSheet.draw(ctx,'ship',this.x,this.y,0);
+        SpriteSheet.draw(ctx,'bottle',this.x,this.y,0);
     }
 }
 
