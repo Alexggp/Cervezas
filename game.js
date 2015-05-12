@@ -24,7 +24,7 @@ var playGame = function() {
     //board.add(new Splash(401,401));
     
   
-    board.add(new Juice(420,400));
+    board.add(new Beer(420,400));
 
    
     Game.setBoard(1,board);
