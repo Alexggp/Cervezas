@@ -194,12 +194,18 @@ var GameBoard = function() {
 
     // Colección de objetos contenidos por este tablero
     this.objects = [];
+	// Colección de splashes contenidos por este tablero
+	this.splashes = [];
 
     // Añade obj a objects
     this.add = function(obj) { 
-	obj.board=this;  // Para que obj pueda referenciar el tablero
-	this.objects.push(obj); 
-	return obj; 
+		obj.board=this;  // Para que obj pueda referenciar el tablero
+		if (obj.sprite=='splash') {
+			this.splashes.push(obj);    //Si es un splash lo guardamos en la lista de splashes
+		}else{
+			this.objects.push(obj);
+		}
+		return obj; 
     };
 
     // Los siguientes 3 métodos gestionan el borrado.  Cuando un board
@@ -230,15 +236,16 @@ var GameBoard = function() {
 
 
 	// Iterador que aplica el método funcName a todos los
-	// objetos de objects	
+	// objetos de objects	y splash
   this.iterate = function(funcName) {
     var args = Array.prototype.slice.call(arguments,1);
     _.each(this.objects,function(obj){obj[funcName].apply(obj,args)});
+	_.each(this.splashes,function(obj){obj[funcName].apply(obj,args)});
   };
 
   // Devuelve el primer objeto de objects para el que func es true
   this.detect = function(func) {
-    return ( _.find(this.objects,function(obj){return func.call(obj)}));
+    return ( _.find(this.splashes,function(obj){return func.call(obj)}));
   };
 
     // Cuando Game.loop() llame a step(), hay que llamar al método
@@ -254,7 +261,8 @@ var GameBoard = function() {
                                   
             var nextTrhowNumber = Math.floor((Math.random() * (4-1)) + 1);
             for (i=0; i<nextTrhowNumber; i++) {
-                this.add(new Beer());
+                Math.random() < 0.80 ? this.add(new Beer()) : this.add(new Juice());
+				
             }
         }
 		
@@ -268,11 +276,13 @@ var GameBoard = function() {
 
     // Comprobar si hay intersección entre los rectángulos que
     // circunscriben a los objetos o1 y o2
-    this.overlap = function(o1,o2) {
-	// return !((o1 encima de o2)    || (o1 debajo de o2)   ||
-        //          (o1 a la izda de o2) || (o1 a la dcha de o2)
-	return !((o1.y+o1.h-1<o2.y) || (o1.y>o2.y+o2.h-1) ||
-		 (o1.x+o1.w-1<o2.x) || (o1.x>o2.x+o2.w-1));
+    this.overlap = function(o2,o1) {
+	
+	return ((o1.y+o1.h>o2.y+o2.h) && (o1.y<o2.y) &&
+		 (o1.x+o1.w>o2.x+o2.w) && (o1.x<o2.x));
+	
+
+	
     };
 
     // Encontrar el primer objeto de tipo type que colisiona con obj

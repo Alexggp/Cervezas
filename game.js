@@ -1,7 +1,8 @@
 
 sprites = {
     bottle: { sx: 0, sy: 0, w: 57, h: 200, frames: 3 },
-    chapa: { sx: 0, sy: 212, w: 29 , h: 29, frames: 4 }
+    chapa: { sx: 0, sy: 212, w: 29 , h: 29, frames: 4 },
+    juice: { sx: 0, sy: 250, w: 78 , h: 200, frames: 1 }
 };
 
 
@@ -20,9 +21,12 @@ var playGame = function() {
     Game.setBoard(4,new GamePoints(0));
     //
     var board = new GameBoard();
-    board.add(new Beer(420,400));
-   // board.add(new Chapa(400,400));
+    //board.add(new Splash(401,401));
+    
+  
+    board.add(new Juice(420,400));
 
+   
     Game.setBoard(1,board);
 
     
@@ -33,6 +37,9 @@ var endGame = function(){
                                     "PRESS TO PLAY AGAIN",
                                     playGame));
 }
+
+var SPLASH_OBJECT       =   1,
+    JUICE_OBJECT        =   2;
 
 
 
@@ -62,6 +69,9 @@ var capaClear = function() {
 }
 
 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////// BEER
 // La clase Beer tambien ofrece la interfaz step(), draw() para
 // poder ser dibujada desde el bucle principal del juego
 var Beer = function(xx,yy) {
@@ -93,12 +103,6 @@ var Beer = function(xx,yy) {
     
     this.vx = Math.floor((Math.random() * (650-400)) + 400) * this.d;
     
-    
-    
-    this.deleteObject= function(){
-        this.board.remove(this);      // lo eliminamos de la lista de objetos del board
-    }
-
  
     this.step = function(dt) {    
             this.x += this.vx * dt;
@@ -110,14 +114,19 @@ var Beer = function(xx,yy) {
             
             // Si el objeto sale de la pantalla lo eliminamos de la lista de objetos
             if(this.y > Game.height || this.x< -this.w || this.x > Game.width) {                   
-                this.deleteObject();                       
+                this.board.remove(this);      // lo eliminamos de la lista de objetos del board                  
             }
-            if(mouse.checkMouse(this) && !this.captured){
+            
+            var underSplash= this.board.collide(this,SPLASH_OBJECT);
+            
+            if(mouse.checkMouse(this) && !this.captured && !underSplash){
                 
                 this.captured=true;
                 Game.points++;
                 
                 this.board.add(new Chapa(this.x,this.y,this.vx));
+
+                
                 
             }
             if (this.captured && this.frame<2){ //si capturamos la botella, secuencia de imagenes de descorche
@@ -128,10 +137,10 @@ var Beer = function(xx,yy) {
             
     }
 }
-
-
 Beer.prototype = new Sprite();
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////CHAPA
 var Chapa = function(ox,oy,vx){
     this.setup('chapa', {frame:0, reloadTime:0.25});
     this.y=oy;
@@ -163,6 +172,102 @@ var Chapa = function(ox,oy,vx){
 }
 Chapa.prototype = new Sprite();
     
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////// JUICE
+var Juice = function(xx,yy) {
+    
+    this.setup('juice', {frame:0, reloadTime:0.25});
+    this.subFrame = 0;
+    this.captured=false;   //indica si hemos pinchado en el objeto
+    
+    
+    // factor de direccion, decide de que lado de la pantalla sale el objeto
+    this.d = Math.random() < 0.5 ? -1 : 1;
+    if (this.d>0) {
+        this.x = -this.w;
+    }
+    else{
+            this.x = Game.width;
+    }
+    
+    // haremos aleatoria la altura, de manera que nunca sobrepase el limite superior
+    // y que salgan de la mitad inferior de la pantalla
+    this.y = Math.floor((Math.random() * (2*Game.height/3 - Game.height/3)) + (Game.height/3));
+
+    // vy marca el margen de distancia de subida, al que se le suma this.G
+    // cuando vy deja de ser negativo, el objeto dejara de subir y caera.
+    
+    this.vy = - Math.floor((Math.random() * (500-300) ) + 300);
+    this.G = Math.floor((Math.random() * (7 -3)) + 3);
+    
+    
+    this.vx = Math.floor((Math.random() * (650-400)) + 400) * this.d;
+    
+ 
+    this.step = function(dt) {    
+            this.x += this.vx * dt;
+            this.y += this.vy * dt;
+            //this.x =xx;
+            //this.y = yy;
+            //
+            this.vy=this.vy+this.G; // cuando vy deja de ser negativo, el objeto dejara de subir y caera.
+            
+            // Si el objeto sale de la pantalla lo eliminamos de la lista de objetos
+            if(this.y > Game.height || this.x< -this.w || this.x > Game.width) {                   
+                this.board.remove(this);      // lo eliminamos de la lista de objetos del board                  
+            }
+
+
+            var underSplash= this.board.collide(this,SPLASH_OBJECT);
+            //console.log(underSplash);
+            if(mouse.checkMouse(this) && !this.captured && !underSplash){   
+                this.captured=true;
+                this.board.remove(this);   
+                this.board.add(new Splash(this.x,this.y));
+                console.log("coasdlasnd")
+            }
+            
+    }
+}
+Juice.prototype = new Sprite();
+Juice.prototype.type = JUICE_OBJECT;
+
+
+////////////////////////////////////////////////////////////////////////////// SPLASH
+//Splash es la mancha verde que sale cuando capturamos un brick de zumo
+var Splash = function(ox,oy) {
+
+    this.sprite="splash";
+    (ox-200)
+    this.x=ox-200;
+    this.y=oy-150;
+    this.w=500;
+    this.h=500;
+    var capa = $('<canvas/>')
+	.attr('width', Game.width)
+	.attr('height', Game.height)[0];
+
+
+
+    var capaCtx = capa.getContext("2d");
+
+	var background = new Image();
+    background.src = "images/splash.png";
+    
+    this.draw = function(ctx) {
+		ctx.drawImage(background,
+			  0, 0,
+			  640, 528,
+			  this.x, this.y,
+			  this.w, this.h);
+    }
+
+    this.step = function(dt) {}
+}
+Splash.prototype.type = SPLASH_OBJECT;
+
+
+
 
 $(function() {
     Game.initialize("game",sprites,startGame);
