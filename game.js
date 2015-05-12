@@ -1,7 +1,7 @@
 
 sprites = {
     bottle: { sx: 0, sy: 0, w: 57, h: 200, frames: 3 },
-    chapa: { sx: 0, sy: 210, w: 40, h: 40, frames: 4 }
+    chapa: { sx: 0, sy: 212, w: 29 , h: 29, frames: 4 }
 };
 
 
@@ -18,10 +18,10 @@ var playGame = function() {
     //Añadidos el reloj y el marcador, si el marcador llega a 0, callback=startGame()
     Game.setBoard(3,new Clock(30, endGame));
     Game.setBoard(4,new GamePoints(0));
-    
+    //
     var board = new GameBoard();
-    board.add(new Throw(420,400));
-    //board.add(new Chapa(400,400));
+    board.add(new Beer(420,400));
+   // board.add(new Chapa(400,400));
 
     Game.setBoard(1,board);
 
@@ -62,9 +62,9 @@ var capaClear = function() {
 }
 
 
-// La clase Throw tambien ofrece la interfaz step(), draw() para
+// La clase Beer tambien ofrece la interfaz step(), draw() para
 // poder ser dibujada desde el bucle principal del juego
-var Throw = function(xx,yy) {
+var Beer = function(xx,yy) {
     
     this.setup('bottle', {frame:0, reloadTime:0.25});
     this.subFrame = 0;
@@ -112,13 +112,15 @@ var Throw = function(xx,yy) {
             if(this.y > Game.height || this.x< -this.w || this.x > Game.width) {                   
                 this.deleteObject();                       
             }
-            if(mouse.checkMouse(this)){
+            if(mouse.checkMouse(this) && !this.captured){
                 
                 this.captured=true;
                 Game.points++;
                 
+                this.board.add(new Chapa(this.x,this.y,this.vx));
+                
             }
-            if (this.captured & this.frame<2){ //si capturamos la botella, secuencia de imagenes de descorche
+            if (this.captured && this.frame<2){ //si capturamos la botella, secuencia de imagenes de descorche
                 this.frame = Math.floor(this.subFrame++ /5);
             }
 
@@ -128,18 +130,34 @@ var Throw = function(xx,yy) {
 }
 
 
-Throw.prototype = new Sprite();
+Beer.prototype = new Sprite();
 
-var Chapa = function(ox,oy){
-    this.setup('chapa', {frame:2, reloadTime:0.25});
+var Chapa = function(ox,oy,vx){
+    this.setup('chapa', {frame:0, reloadTime:0.25});
     this.y=oy;
     this.x=ox;
+    
+    this.vx= vx + (-vx*0.25);
+    
+    this.vy=-400;
     this.subFrame = 0;
     this.step = function(dt) {
-    //this.frame = Math.floor(this.subFrame++ /75);
-    //  if(this.subFrame >= 300) {
-    //  this.board.remove(this);
-    //}
+        
+        this.y += this.vy * dt;
+        this.vy+=15;
+        this.x += this.vx * dt;
+    
+        
+        this.frame = Math.floor(this.subFrame++ /6);
+          if(this.frame>3) {
+           this.frame=0;
+           this.subFrame = 0;
+        }
+        
+        
+        if(this.y > Game.height || this.x< -this.w || this.x > Game.width) {                   
+                this.board.remove(this);                       
+            }
 
     }
 }

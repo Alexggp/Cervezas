@@ -254,7 +254,7 @@ var GameBoard = function() {
                                   
             var nextTrhowNumber = Math.floor((Math.random() * (4-1)) + 1);
             for (i=0; i<nextTrhowNumber; i++) {
-                this.add(new Throw());
+                this.add(new Beer());
             }
         }
 		
