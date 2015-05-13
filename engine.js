@@ -1,12 +1,11 @@
-// Alien Invasion utiliza duck typing para implementar como dibujar
-// elementos en la pantalla (método draw()) y para que actualicen su
-// estado cada vez que el bucle de animación marca un nuevo paso
-// (método step()).
-//
-// Estos dos métodos son implementados por: las pantallas iniciales y
-// final del juego, los sprites que se muestran en la pantalla
-// (jugador, enemigo, proyectiles, y los elementos como el marcador de
-// puntuación o el número de vidas.
+$(document).ready(function() {
+		//$('#container').height($(window).height());
+		//$('#container').width($(window).width());
+		//$('#container').height(600);
+		//$('#container').width(900);
+		//
+		//Game.initialize("game",sprites,startGame);
+});
 
 
 
@@ -17,27 +16,57 @@ var Game = new function() {
 
     // Inicializa el juego
     this.initialize = function(canvasElementId,sprite_data,callback) {
-	this.canvas = document.getElementById(canvasElementId);
-	this.canvas.width = this.canvas.offsetWidth;
-	this.canvas.height = this.canvas.offsetHeight;
-	this.width = this.canvas.width;
-	this.height= this.canvas.height;
 
-	this.points=0;
+		
+		this.canvas = document.getElementById(canvasElementId);
+		this.canvas.width = this.canvas.offsetWidth;
+		this.canvas.height = this.canvas.offsetHeight;
+		
+		
+		
+		this.width = this.canvas.width;
+		this.height= this.canvas.height;
 	
+		
+		
+		this.points=0;
+		
+		
+		this.ctx = this.canvas.getContext && this.canvas.getContext('2d');
+		if(!this.ctx) { return alert("Please upgrade your browser to play"); }
 	
-	this.ctx = this.canvas.getContext && this.canvas.getContext('2d');
-	if(!this.ctx) { return alert("Please upgrade your browser to play"); }
-
-	this.setupInput();
-
-	this.loop(); 
-
-	//Iniciamos los handlers del mouse
-	mouse.init();
-	Sound.init();
-	SpriteSheet.load (sprite_data,callback);
+		this.setupMobile();
+	
+		if(this.mobile) {
+	          alert("Desliza el dedo por la parte superior de la pantalla para activar la pantalla completa");
+	      }
+	
+		this.setupInput();
+	
+		this.loop(); 
+	
+		//Iniciamos los handlers del mouse
+		mouse.init();
+		Sound.init();
+		SpriteSheet.load (sprite_data,callback);
     };
+	
+	
+	this.setupMobile = function() {
+		
+            // Comprobar si el browser soporta eventos táctiles
+            hasTouch =  !!('ontouchstart' in window),
+      // Ancho y alto de la ventana del browser
+            w = window.innerWidth, h = window.innerHeight;
+
+	      if(hasTouch) { this.mobile = true; }
+	      
+    };
+	
+	
+	
+	
+	
 
     // Gestión de la entrada (teclas para izda/derecha y disparo)
     var KEY_CODES = { 37:'left', 39:'right', 32 :'fire' };

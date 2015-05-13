@@ -46,13 +46,7 @@ var SPLASH_OBJECT       =   1,
 // Esta capa se refresca constantemente y hace que se borren las trazas de los objetos al moverse
 var capaClear = function() {
 
-    var capa = $('<canvas/>')
-	.attr('width', Game.width)
-	.attr('height', Game.height)[0];
 
-
-
-    var capaCtx = capa.getContext("2d");
 
 	var background = new Image();
     background.src = "images/background.png";
@@ -60,9 +54,9 @@ var capaClear = function() {
     this.draw = function(ctx) {
 		ctx.drawImage(background,
 			  0, 0,
-			  capa.width, capa.height,
+			  1280, 720,
 			  0, 0,
-			  capa.width, capa.height);
+			  Game.width, Game.height);
     }
 
     this.step = function(dt) {}
