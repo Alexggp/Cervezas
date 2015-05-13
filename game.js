@@ -123,7 +123,7 @@ var Beer = function(xx,yy) {
                 
                 this.captured=true;
                 Game.points++;
-                
+                if(Sound.mp3Support) Sound.SoundPlay("beer_open");
                 this.board.add(new Chapa(this.x,this.y,this.vx));
 
                 
@@ -222,7 +222,8 @@ var Juice = function(xx,yy) {
             //console.log(underSplash);
             if(mouse.checkMouse(this) && !this.captured && !underSplash){   
                 this.captured=true;
-                this.board.remove(this);   
+                this.board.remove(this);
+                if(Sound.mp3Support) Sound.SoundPlay("splash");
                 this.board.add(new Splash(this.x,this.y));
                 console.log("coasdlasnd")
             }

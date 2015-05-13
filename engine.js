@@ -34,7 +34,8 @@ var Game = new function() {
 	this.loop(); 
 
 	//Iniciamos los handlers del mouse
-	mouse.init(); 
+	mouse.init();
+	Sound.init();
 	SpriteSheet.load (sprite_data,callback);
     };
 
@@ -418,5 +419,35 @@ var GamePoints = function(x) {
   this.step = function(dt) { };
 };
 
+
+
+var Sound= {
+        //loaded:true,
+        //loadedCount:0, // Assets that have been loaded so far
+        //totalCount:0, // Total number of assets that need to be loaded
+        mp3Support:false,
+        init:function(){
+                // check for sound support
+                var audio = document.createElement('audio');
+                if (audio.canPlayType) {
+                         // Currently canPlayType() returns: "", "maybe" or "probably"
+                         this.mp3Support = true;
+						 console.log("musica")
+                } else {
+                        //The audio tag is not supported
+                        this.mp3Support = false;
+						console.log('no hay musica')
+                }
+                        
+        },
+        SoundPlay(url){			
+            var audio = new Audio();
+            audio.src = 'audio/'+url+'.mp3';
+            audio.load();
+			audio.play();
+                        
+        }
+        
+}
 
 
