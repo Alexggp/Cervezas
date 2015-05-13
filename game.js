@@ -264,6 +264,6 @@ Splash.prototype.type = SPLASH_OBJECT;
 
 
 
-$(function() {
-    Game.initialize("game",sprites,startGame);
-});
+//$(function() {
+//    Game.initialize("game",sprites,startGame);
+//});

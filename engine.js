@@ -1,10 +1,10 @@
 $(document).ready(function() {
 		//$('#container').height($(window).height());
 		//$('#container').width($(window).width());
-		//$('#container').height(600);
-		//$('#container').width(900);
-		//
-		//Game.initialize("game",sprites,startGame);
+		$('#container').height(600);
+		$('#container').width(1000);
+		
+		Game.initialize("game",sprites,startGame);
 });
 
 
