@@ -46,7 +46,13 @@ var SPLASH_OBJECT       =   1,
 // Esta capa se refresca constantemente y hace que se borren las trazas de los objetos al moverse
 var capaClear = function() {
 
+    var capa = $('<canvas/>')
+	.attr('width', Game.width)
+	.attr('height', Game.height)[0];
 
+
+
+    var capaCtx = capa.getContext("2d");
 
 	var background = new Image();
     background.src = "images/background.png";
@@ -54,9 +60,9 @@ var capaClear = function() {
     this.draw = function(ctx) {
 		ctx.drawImage(background,
 			  0, 0,
-			  1280, 720,
+			  capa.width, capa.height,
 			  0, 0,
-			  Game.width, Game.height);
+			  capa.width, capa.height);
     }
 
     this.step = function(dt) {}
@@ -117,7 +123,17 @@ var Beer = function(xx,yy) {
                 
                 this.captured=true;
                 Game.points++;
-                if(Sound.mp3Support) Sound.SoundPlay("beer_open");
+                
+                this.board.add(new Chapa(this.x,this.y,this.vx));
+
+                
+                
+            }
+            if(touch.checkTouch(this) && !this.captured && !underSplash){
+                
+                this.captured=true;
+                Game.points++;
+                
                 this.board.add(new Chapa(this.x,this.y,this.vx));
 
                 
@@ -216,8 +232,13 @@ var Juice = function(xx,yy) {
             //console.log(underSplash);
             if(mouse.checkMouse(this) && !this.captured && !underSplash){   
                 this.captured=true;
-                this.board.remove(this);
-                if(Sound.mp3Support) Sound.SoundPlay("splash");
+                this.board.remove(this);   
+                this.board.add(new Splash(this.x,this.y));
+                console.log("coasdlasnd")
+            }
+            if(touch.checkTouch(this) && !this.captured && !underSplash){   
+                this.captured=true;
+                this.board.remove(this);   
                 this.board.add(new Splash(this.x,this.y));
                 console.log("coasdlasnd")
             }

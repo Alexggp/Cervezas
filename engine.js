@@ -1,11 +1,12 @@
-$(document).ready(function() {
-		//$('#container').height($(window).height());
-		//$('#container').width($(window).width());
-		//$('#container').height(600);
-		//$('#container').width(900);
-		//
-		//Game.initialize("game",sprites,startGame);
-});
+// Alien Invasion utiliza duck typing para implementar como dibujar
+// elementos en la pantalla (método draw()) y para que actualicen su
+// estado cada vez que el bucle de animación marca un nuevo paso
+// (método step()).
+//
+// Estos dos métodos son implementados por: las pantallas iniciales y
+// final del juego, los sprites que se muestran en la pantalla
+// (jugador, enemigo, proyectiles, y los elementos como el marcador de
+// puntuación o el número de vidas.
 
 
 
@@ -16,78 +17,28 @@ var Game = new function() {
 
     // Inicializa el juego
     this.initialize = function(canvasElementId,sprite_data,callback) {
+	this.canvas = document.getElementById(canvasElementId);
+	this.canvas.width = this.canvas.offsetWidth;
+	this.canvas.height = this.canvas.offsetHeight;
+	this.width = this.canvas.width;
+	this.height= this.canvas.height;
 
-		
-		this.canvas = document.getElementById(canvasElementId);
-		this.canvas.width = this.canvas.offsetWidth;
-		this.canvas.height = this.canvas.offsetHeight;
-		
-		
-		
-		this.width = this.canvas.width;
-		this.height= this.canvas.height;
+	this.points=0;
 	
+	this.canvasMultiplier =1;
+	this.playerOffset = 10;
+	this.setupMobile();
 		
-		
-		this.points=0;
-		
-		
-		this.ctx = this.canvas.getContext && this.canvas.getContext('2d');
-		if(!this.ctx) { return alert("Please upgrade your browser to play"); }
-	
-		this.setupMobile();
-	
-		if(this.mobile) {
-	          alert("Desliza el dedo por la parte superior de la pantalla para activar la pantalla completa");
-	      }
-	
-		this.setupInput();
-	
-		this.loop(); 
-	
-		//Iniciamos los handlers del mouse
-		mouse.init();
-		Sound.init();
-		SpriteSheet.load (sprite_data,callback);
+	this.ctx = this.canvas.getContext && this.canvas.getContext('2d');
+	if(!this.ctx) { return alert("Please upgrade your browser to play"); }
+
+
+	this.loop(); 
+
+	//Iniciamos los handlers del mouse
+	mouse.init(); 
+	SpriteSheet.load (sprite_data,callback);
     };
-	
-	
-	this.setupMobile = function() {
-		
-            // Comprobar si el browser soporta eventos táctiles
-            hasTouch =  !!('ontouchstart' in window),
-      // Ancho y alto de la ventana del browser
-            w = window.innerWidth, h = window.innerHeight;
-
-	      if(hasTouch) { this.mobile = true; }
-	      
-    };
-	
-	
-	
-	
-	
-
-    // Gestión de la entrada (teclas para izda/derecha y disparo)
-    var KEY_CODES = { 37:'left', 39:'right', 32 :'fire' };
-    this.keys = {};
-	this.setupInput = function() {
-	$(window).keydown(function(event){
-	    if (KEY_CODES[event.which]) {
-		Game.keys[KEY_CODES[event.which]] = true;
-		return false;
-	    }
-	});
-	
-	$(window).keyup(function(event){
-	    if (KEY_CODES[event.which]) {
-		Game.keys[KEY_CODES[event.which]] = false;
-		return false;
-	    }
-	});
-	
-    }
-
 	
     // Bucle del juego
     var boards = [];
@@ -113,6 +64,85 @@ var Game = new function() {
     // Son capas: se dibujan de menor num a mayor
     // Cada capa tiene que tener en su interfaz step() y draw()
     this.setBoard = function(num,board) { boards[num] = board; };
+	
+	this.setupMobile = function() {
+
+//          this.canvas.width=this.canvasOriginalwidth;
+//	      this.canvas.height=this.canvasOriginalheight;
+ 	      var container = document.getElementById("container"),
+            // Comprobar si el browser soporta eventos táctiles
+            hasTouch =  !!('ontouchstart' in window),
+      // Ancho y alto de la ventana del browser
+            w = window.innerWidth, h = window.innerHeight;
+
+	      if(hasTouch) { this.mobile = true; touch.init()}//this.setupTouch()}
+
+	      // Salir si la pantalla es mayor que cierto tamaño máximo o si no
+	      // tiene soporte para eventos táctiles
+	      if(screen.width >= 1280 || !hasTouch) { return false; }
+	      
+	      
+        
+        if (w<h){
+          this.canvas.style.position='absolute';
+          this.canvas.style.left="0px";
+          this.canvas.style.top="0px";
+          this.canvasMultiplier=w/this.canvas.width;
+          
+          this.canvas.width=this.canvas.width*this.canvasMultiplier;
+          this.width=this.canvas.width;
+        
+          this.canvas.height=this.canvas.height*this.canvasMultiplier;
+          this.height=this.canvas.height;
+          
+          
+        }
+        else{
+          this.canvas.style.position='relative';
+
+          this.canvasMultiplier=w/this.canvas.width;
+          this.canvas.height=this.canvas.height*h/this.canvas.height;
+          this.canvas.width=this.canvas.width*h/this.canvas.height;
+          this.width=this.canvas.width;
+          this.height=this.canvas.height;
+        }
+
+          
+    };
+	
+	//this.setupTouch = function() {
+	//
+	//		
+	//	// Manejador para eventos de la pantalla táctil
+	//	this.trackTouch = function(e) {
+	//		  var touch, x,y;
+	//	
+	//		  // Elimina comportamiento por defecto para este evento, como
+	//		  // scrolling, clicking, zooming, etc.
+	//		  e.preventDefault();
+	//
+	//
+	//
+	//		  for(var i=0;i<e.targetTouches.length;i++) {
+	//			  touch = e.targetTouches[i];
+	//
+	//			  
+	//			  x = touch.pageX / Game.canvasMultiplier - Game.canvas.offsetLeft;
+	//			  y = touch.pageY / Game.canvasMultiplier;
+	//			  alert(x,y)
+	//	
+	//		  }
+	//	};
+	//	
+	//
+	//	// Registra los manejadores para los eventos táctiles asociados al
+	//	// elemento Game.canvas del DOM
+	//	Game.canvas.addEventListener('touchstart',this.trackTouch,true);
+	//	//Game.canvas.addEventListener('touchmove',this.trackTouch,true);
+	//	//Game.canvas.addEventListener('touchend',this.trackTouch,true);
+	//
+	//};
+	
 };
 
 
@@ -184,8 +214,12 @@ var TitleScreen = function TitleScreen(title,subtitle,callback) {
 	
 	
     this.step = function(dt) {
-	if(!Game.keys['fire']) up = true;
-	if(up && Game.keys['fire'] && callback) callback();
+		if(!mouse.down) up = true;
+		if(up && mouse.down && callback) callback();
+		
+		if(!touch.down) up = true;
+		if(up && touch.down && callback) callback();
+		
     };
 
     this.draw = function(ctx) {
@@ -360,7 +394,7 @@ var mouse ={
         return true;
 	  }
         
-
+	
       
   },
 };
@@ -449,34 +483,42 @@ var GamePoints = function(x) {
 };
 
 
+var touch ={
+  x:0,
+  y:0,
+  down:false,
+  init:function(){
+	  Game.canvas.addEventListener('touchstart',function(ev){
+		var offset = $('#game').offset();
+		touch.x= ev.changedTouches[0].pageX ;//- offset.left;
+		touch.y= ev.changedTouches[0].pageY ;//- offset.top;	
+		touch.down = true;
+		touch.downX = mouse.x;
+		touch.downY = mouse.y;
+		ev.originalEvent.preventDefault();
+		
+	   },true);
+	  Game.canvas.addEventListener('touchend',function(ev){
+		touch.down = false;
+     	touch.current= undefined; 
+	  },false);	
+  },
 
-var Sound= {
-        //loaded:true,
-        //loadedCount:0, // Assets that have been loaded so far
-        //totalCount:0, // Total number of assets that need to be loaded
-        mp3Support:false,
-        init:function(){
-                // check for sound support
-                var audio = document.createElement('audio');
-                if (audio.canPlayType) {
-                         // Currently canPlayType() returns: "", "maybe" or "probably"
-                         this.mp3Support = true;
-						 console.log("musica")
-                } else {
-                        //The audio tag is not supported
-                        this.mp3Support = false;
-						console.log('no hay musica')
-                }
-                        
-        },
-        SoundPlay(url){			
-            var audio = new Audio();
-            audio.src = 'audio/'+url+'.mp3';
-            audio.load();
-			audio.play();
-                        
-        }
+  checkTouch:function(object){
+	    
+	  //Si pinchamos dentro del objeto entramos
+      if (touch.down && touch.x > object.x && touch.x < object.x+object.w && touch.y > object.y 
+                                      && touch.y < object.y+object.h && !touch.current){
+		
+		touch.current=true;
+        return true;
+	  }
         
-}
+	
+      
+  },
+};
+
+
 
 
