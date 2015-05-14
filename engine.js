@@ -1,13 +1,12 @@
-// Alien Invasion utiliza duck typing para implementar como dibujar
-// elementos en la pantalla (método draw()) y para que actualicen su
-// estado cada vez que el bucle de animación marca un nuevo paso
-// (método step()).
+//$(document).ready(function() {
 //
-// Estos dos métodos son implementados por: las pantallas iniciales y
-// final del juego, los sprites que se muestran en la pantalla
-// (jugador, enemigo, proyectiles, y los elementos como el marcador de
-// puntuación o el número de vidas.
-
+//	$( "#container" ).click(function() {
+//      document.documentElement.webkitRequestFullScreen();
+//
+//	});
+//
+//
+//});
 
 
 
@@ -17,31 +16,50 @@ var Game = new function() {
 
     // Inicializa el juego
     this.initialize = function(canvasElementId,sprite_data,callback) {
-	this.canvas = document.getElementById(canvasElementId);
-	this.canvas.width = this.canvas.offsetWidth;
-	this.canvas.height = this.canvas.offsetHeight;
-	this.width = this.canvas.width;
-	this.height= this.canvas.height;
-
-	this.points=0;
-	
-	this.canvasMultiplier =1;
-	this.playerOffset = 10;
-	this.setupMobile();
+		this.canvas = document.getElementById(canvasElementId);
+		this.canvas.addEventListener("click",Game.fullscreen);
 		
-	this.ctx = this.canvas.getContext && this.canvas.getContext('2d');
-	if(!this.ctx) { return alert("Please upgrade your browser to play"); }
-
-
-	this.loop(); 
-
-	//Iniciamos los handlers del mouse
-	mouse.init(); 
-	SpriteSheet.load (sprite_data,callback);
+		this.points=0;
+		
+		//para movil
+		this.canvasMultiplier =1;
+		this.setupDimensions();
+		this.setupMobile();
+		
+			
+		this.ctx = this.canvas.getContext && this.canvas.getContext('2d');
+		if(!this.ctx) { return alert("Please upgrade your browser to play"); }
+	
+	
+		this.loop(); 
+	
+		//Iniciamos los handlers del mouse
+		mouse.init();
+		Sound.init();
+		SpriteSheet.load (sprite_data,callback);
     };
 	
     // Bucle del juego
     var boards = [];
+
+
+	this.fullscreen= function(){
+        var el = Game.canvas;
+		if(el.requestFullScreen) {
+			el.requestFullScreen();
+	    }
+        if(el.webkitRequestFullScreen) {
+			el.webkitRequestFullScreen();
+        }
+        else {
+			el.mozRequestFullScreen();
+        }
+		Game.canvas.removeEventListener("click",Game.fullscreen);
+		setTimeout(function(){ Game.setupDimensions() }, 500);
+	}    
+
+
+
 
     this.loop = function() { 
 	// segundos transcurridos
@@ -69,79 +87,54 @@ var Game = new function() {
 
 //          this.canvas.width=this.canvasOriginalwidth;
 //	      this.canvas.height=this.canvasOriginalheight;
- 	      var container = document.getElementById("container"),
+ 	      var container = document.getElementById("container");
             // Comprobar si el browser soporta eventos táctiles
-            hasTouch =  !!('ontouchstart' in window),
-      // Ancho y alto de la ventana del browser
-            w = window.innerWidth, h = window.innerHeight;
+            hasTouch =  !!('ontouchstart' in window);
+			// Ancho y alto de la ventana del browser
 
-	      if(hasTouch) { this.mobile = true; touch.init()}//this.setupTouch()}
+
+	      if(hasTouch) { this.mobile = true; touch.init();}
 
 	      // Salir si la pantalla es mayor que cierto tamaño máximo o si no
 	      // tiene soporte para eventos táctiles
 	      if(screen.width >= 1280 || !hasTouch) { return false; }
 	      
 	      
-        
-        if (w<h){
-          this.canvas.style.position='absolute';
-          this.canvas.style.left="0px";
-          this.canvas.style.top="0px";
-          this.canvasMultiplier=w/this.canvas.width;
-          
-          this.canvas.width=this.canvas.width*this.canvasMultiplier;
-          this.width=this.canvas.width;
-        
-          this.canvas.height=this.canvas.height*this.canvasMultiplier;
-          this.height=this.canvas.height;
-          
-          
-        }
-        else{
-          this.canvas.style.position='relative';
+	}
+	this.setupDimensions= function(){
+		
+		
+		//this.canvas.width = this.canvas.offsetWidth;
+		//this.canvas.height = this.canvas.offsetHeight;
+		//this.width = this.canvas.width;
+		//this.height= this.canvas.height;
+		
+		
+	    w = window.innerWidth, h = window.innerHeight;
+		console.log(w,h);
 
-          this.canvasMultiplier=w/this.canvas.width;
-          this.canvas.height=this.canvas.height*h/this.canvas.height;
-          this.canvas.width=this.canvas.width*h/this.canvas.height;
-          this.width=this.canvas.width;
-          this.height=this.canvas.height;
-        }
-
+		this.canvas.style.position='absolute';
+        this.canvas.style.left="0px";
+        this.canvas.style.top="0px";
+        this.canvasMultiplier=w/this.canvas.width;
+        //  
+        //this.canvas.width=this.canvas.width*this.canvasMultiplier;
+        //this.width=this.canvas.width;
+        //
+        //this.canvas.height=this.canvas.height*this.canvasMultiplier;
+		
+		
+		this.canvas.width=w;
+		this.canvas.height=h;
+		this.width=this.canvas.width;
+        this.height=this.canvas.height;
+        
+		$('#game').height(h);
+		$('#game').width(w);
           
     };
 	
-	//this.setupTouch = function() {
-	//
-	//		
-	//	// Manejador para eventos de la pantalla táctil
-	//	this.trackTouch = function(e) {
-	//		  var touch, x,y;
-	//	
-	//		  // Elimina comportamiento por defecto para este evento, como
-	//		  // scrolling, clicking, zooming, etc.
-	//		  e.preventDefault();
-	//
-	//
-	//
-	//		  for(var i=0;i<e.targetTouches.length;i++) {
-	//			  touch = e.targetTouches[i];
-	//
-	//			  
-	//			  x = touch.pageX / Game.canvasMultiplier - Game.canvas.offsetLeft;
-	//			  y = touch.pageY / Game.canvasMultiplier;
-	//			  alert(x,y)
-	//	
-	//		  }
-	//	};
-	//	
-	//
-	//	// Registra los manejadores para los eventos táctiles asociados al
-	//	// elemento Game.canvas del DOM
-	//	Game.canvas.addEventListener('touchstart',this.trackTouch,true);
-	//	//Game.canvas.addEventListener('touchmove',this.trackTouch,true);
-	//	//Game.canvas.addEventListener('touchend',this.trackTouch,true);
-	//
-	//};
+
 	
 };
 
@@ -164,7 +157,7 @@ var SpriteSheet = new function() {
 	this.map = spriteData;
 	this.image = new Image();
 	this.image.onload = callback;
-	this.image.src = 'images/beer_bottle.png';
+	this.image.src = 'images/sprites.png';
     };
 
     
@@ -495,7 +488,6 @@ var touch ={
 		touch.down = true;
 		touch.downX = mouse.x;
 		touch.downY = mouse.y;
-		ev.originalEvent.preventDefault();
 		
 	   },true);
 	  Game.canvas.addEventListener('touchend',function(ev){
@@ -519,6 +511,32 @@ var touch ={
   },
 };
 
+var Sound= new function(){
+        //loaded:true,
+        //loadedCount:0, // Assets that have been loaded so far
+        //totalCount:0, // Total number of assets that need to be loaded
 
+        this.mp3Support=false;
+        this.init=function(){
+                // check for sound support
+                var audio = document.createElement('audio');
+                if (audio.canPlayType) {
+                         // Currently canPlayType() returns: "", "maybe" or "probably"
+                         this.mp3Support = true;
+                } else {
+                        //The audio tag is not supported
+                        this.mp3Support = false;
+                }
+                Sound.extension= this.mp3Support;        
+        };
+        this.SoundPlay= function(url){			
+            var audio = new Audio();
+            audio.src = 'audio/'+url+'.mp3';
+            audio.load();
+			audio.play();
+                        
+        }
+        
+}
 
 
