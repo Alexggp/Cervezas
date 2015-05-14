@@ -538,5 +538,3 @@ var Sound= new function(){
         }
         
 }
-
-

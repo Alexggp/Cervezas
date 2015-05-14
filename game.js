@@ -1,4 +1,5 @@
 
+
 sprites = {
     bottle: { sx: 0, sy: 0, w: 57, h: 200, frames: 3 },
     chapa: { sx: 0, sy: 212, w: 29 , h: 29, frames: 4 },
