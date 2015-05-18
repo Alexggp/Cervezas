@@ -17,29 +17,41 @@ var Game = new function() {
     // Inicializa el juego
     this.initialize = function(canvasElementId,sprite_data,callback) {
 		this.canvas = document.getElementById(canvasElementId);
+		this.ctx = this.canvas.getContext && this.canvas.getContext('2d');
+		if(!this.ctx) { return alert("Please upgrade your browser to play"); }
+		
+		
+		
+		// Chapucilla momentanea: añadimos un listener para poder hacer fullscreen,
+		// fullscreen no puede lanzarse solo, necesita un evento de usuario por motivos de seguridad... 
 		this.canvas.addEventListener("click",Game.fullscreen);
 		
+		//Contador de puntos a cero
 		this.points=0;
 		
 		//para movil
-		this.canvasMultiplier =1;
-		this.setupDimensions();
-		this.setupMobile();
+		this.canvasMultiplier =1;    //constante de proporcionalidad de los objetos y la pantalla
 		
-			
-		this.ctx = this.canvas.getContext && this.canvas.getContext('2d');
-		if(!this.ctx) { return alert("Please upgrade your browser to play"); }
+		//Comprobamos si la pantalla es tactil, y lanzamos touch o mouse
+		this.mobile=false;
+		this.setupMobile();
+		if (this.mobile){
+			touch.init();
+		}else{
+			mouse.init();
+		}
+		
+		this.setupDimensions();			//Ajusta el juego a la pantalla
+
 	
-	
-		this.loop(); 
-	
-		//Iniciamos los handlers del mouse
-		mouse.init();
+		
 		Sound.init();
 		SpriteSheet.load (sprite_data,callback);
+		
+		this.loop(); 
+		
     };
 	
-    // Bucle del juego
     var boards = [];
 
 
@@ -54,7 +66,7 @@ var Game = new function() {
         else {
 			el.mozRequestFullScreen();
         }
-		Game.canvas.removeEventListener("click",Game.fullscreen);
+		Game.canvas.removeEventListener("click",Game.fullscreen); 
 		setTimeout(function(){ Game.setupDimensions() }, 500);
 	}    
 
@@ -74,7 +86,7 @@ var Game = new function() {
 	    }
 	}
 
-	// Ejecutar dentro de 30 ms
+	// Ejecutar dentro de 10 ms
 	setTimeout(Game.loop,10);
     };
     
@@ -85,30 +97,22 @@ var Game = new function() {
 	
 	this.setupMobile = function() {
 
-//          this.canvas.width=this.canvasOriginalwidth;
-//	      this.canvas.height=this.canvasOriginalheight;
+
  	      var container = document.getElementById("container");
             // Comprobar si el browser soporta eventos táctiles
             hasTouch =  !!('ontouchstart' in window);
 			// Ancho y alto de la ventana del browser
 
 
-	      if(hasTouch) { this.mobile = true; touch.init();}
+	      if(hasTouch) { this.mobile = true;}
 
 	      // Salir si la pantalla es mayor que cierto tamaño máximo o si no
 	      // tiene soporte para eventos táctiles
-	      if(screen.width >= 1280 || !hasTouch) { return false; }
+	      if(screen.width >= 1280 || !hasTouch) { this.mobile=false; }
 	      
 	      
 	}
 	this.setupDimensions= function(){
-		
-		
-		//this.canvas.width = this.canvas.offsetWidth;
-		//this.canvas.height = this.canvas.offsetHeight;
-		//this.width = this.canvas.width;
-		//this.height= this.canvas.height;
-		
 		
 	    w = window.innerWidth, h = window.innerHeight;
 		console.log(w,h);
@@ -117,11 +121,7 @@ var Game = new function() {
         this.canvas.style.left="0px";
         this.canvas.style.top="0px";
         this.canvasMultiplier=w/this.canvas.width;
-        //  
-        //this.canvas.width=this.canvas.width*this.canvasMultiplier;
-        //this.width=this.canvas.width;
-        //
-        //this.canvas.height=this.canvas.height*this.canvasMultiplier;
+
 		
 		
 		this.canvas.width=w;
@@ -140,105 +140,8 @@ var Game = new function() {
 
 
 
-// Objeto singleton SpriteSheet: se guarda una unica instancia del
-// constructor anónimo en el objeto SpriteSheet
-var SpriteSheet = new function() {
 
-    // Almacena nombre_de_sprite: rectángulo para que sea mas facil
-    // gestionar los sprites del fichero images/sprite.png
-    this.map = { }; 
-
-    // Para cargar hoja de sprites. 
-    //
-    // Parámetros: spriteData: parejas con nombre de sprite, rectángulo
-    // callback: para llamarla cuando se haya cargado la hoja de
-    // sprites
-    this.load = function(spriteData,callback) { 
-	this.map = spriteData;
-	this.image = new Image();
-	this.image.onload = callback;
-	this.image.src = 'images/sprites.png';
-    };
-
-    
-    // Para dibujar sprites individuales en el contexto de canvas ctx
-    //
-    // Parámetros: contexto, string con nombre de sprite para buscar
-    //  en this.map, x e y en las que dibujarlo, y opcionalmente,
-    //  frame para seleccionar el frame de un sprite que tenga varios
-    //  como la explosion
-    this.draw = function(ctx,sprite,x,y,frame) {
-	var s = this.map[sprite];
-	if(!frame) frame = 0;
-	ctx.drawImage(this.image,
-                      s.sx + frame * s.w, 
-                      s.sy, 
-                      s.w, s.h, 
-                      Math.floor(x), Math.floor(y),
-                      s.w, s.h);
-    };
-}
-
-
-
-// La clase TitleScreen ofrece la interfaz step(), draw() para que
-// pueda ser mostrada desde el bucle principal del juego
-
-// Usa fillText, con el siguiente font enlazado en index.html <link
-// href='http://fonts.googleapis.com/css?family=Bangers'
-// rel='stylesheet' type='text/css'> Otros fonts:
-// http://www.google.com/fonts
-
-var TitleScreen = function TitleScreen(title,subtitle,callback) {
-    var up = false;
-
-    // En cada paso, comprobamos si la tecla ha pasado de no pulsada a
-    // pulsada. Si comienza el juego con la tecla pulsada, hay que
-    // soltarla y
-	var capa = $('<canvas/>')
-		.attr('width', Game.width)
-		.attr('height', Game.height)[0];
-	
-	var capaCtx = capa.getContext("2d");
-
- 
-	capaCtx.fillStyle = "#101010";
-	capaCtx.fillRect(0,0,capa.width,capa.height);
-	
-	
-    this.step = function(dt) {
-		if(!mouse.down) up = true;
-		if(up && mouse.down && callback) callback();
-		
-		if(!touch.down) up = true;
-		if(up && touch.down && callback) callback();
-		
-    };
-
-    this.draw = function(ctx) {
-		
-	ctx.drawImage(capa,
-			  0, 0,
-			  capa.width, capa.height,
-			  0, 0,
-			  capa.width, capa.height);	
-		
-		
-		
-	ctx.fillStyle = "#FFFFFF";
-	ctx.textAlign = "center";
-
-	ctx.font = "bold 40px bangers";
-	ctx.fillText(title,Game.width/2,Game.height/2);
-
-	ctx.font = "bold 20px bangers";
-	ctx.fillText(subtitle,Game.width/2,Game.height/2 + 40);
-    };
-};
-
-
-
-
+/////////////////////////////////////////////////////////////////////////////// GAMEBOARD
 // GameBoard implementa un tablero de juego que gestiona la
 // interacción entre los elementos del juego sobre el que se disponen
 // los elementos del juego (fichas, cartas, naves, proyectiles, etc.)
@@ -354,6 +257,77 @@ var GameBoard = function() {
 		});
     };
 };
+
+
+///////////////////////////////////////////////////////////////////////////////////// SpriteSheet
+
+// Objeto singleton SpriteSheet: se guarda una unica instancia del
+// constructor anónimo en el objeto SpriteSheet
+var SpriteSheet = new function() {
+
+    // Almacena nombre_de_sprite: rectángulo para que sea mas facil
+    // gestionar los sprites del fichero images/sprite.png
+    this.map = { }; 
+
+    // Para cargar hoja de sprites. 
+    //
+    // Parámetros: spriteData: parejas con nombre de sprite, rectángulo
+    // callback: para llamarla cuando se haya cargado la hoja de
+    // sprites
+    this.load = function(spriteData,callback) { 
+	this.map = spriteData;
+	this.image = new Image();
+	this.image.onload = callback;
+	this.image.src = 'images/sprites.png';
+    };
+
+    
+    // Para dibujar sprites individuales en el contexto de canvas ctx
+    //
+    // Parámetros: contexto, string con nombre de sprite para buscar
+    //  en this.map, x e y en las que dibujarlo, y opcionalmente,
+    //  frame para seleccionar el frame de un sprite que tenga varios
+    //  como la explosion
+    this.draw = function(ctx,sprite,x,y,frame) {
+	var s = this.map[sprite];
+	if(!frame) frame = 0;
+	ctx.drawImage(this.image,
+                      s.sx + frame * s.w, 
+                      s.sy, 
+                      s.w, s.h, 
+                      Math.floor(x), Math.floor(y),
+                      s.w, s.h);
+    };
+}
+
+
+///////////////////////////////////////////////////////////////////////////// Constructor Sprite
+
+// pinta los objetos en el tablero con los sprites correspondientes
+var Sprite = function() { }
+
+Sprite.prototype.setup = function(sprite,props) {
+    this.sprite = sprite;
+    this.merge(props);
+    this.frame = this.frame || 0;
+    this.w =  SpriteSheet.map[sprite].w;
+    this.h =  SpriteSheet.map[sprite].h;
+}
+
+Sprite.prototype.merge = function(props) {
+    if(props) {
+	      for (var prop in props) {
+	          this[prop] = props[prop];
+	      }
+    }
+}
+
+Sprite.prototype.draw = function(ctx) {
+    SpriteSheet.draw(ctx,this.sprite,this.x,this.y,this.frame);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////// EVENTOS DE MOUSE
 var mouse ={
   x:0,
   y:0,
@@ -392,90 +366,7 @@ var mouse ={
   },
 };
 
-// Constructor Sprite 
-var Sprite = function() { }
-
-Sprite.prototype.setup = function(sprite,props) {
-    this.sprite = sprite;
-    this.merge(props);
-    this.frame = this.frame || 0;
-    this.w =  SpriteSheet.map[sprite].w;
-    this.h =  SpriteSheet.map[sprite].h;
-}
-
-Sprite.prototype.merge = function(props) {
-    if(props) {
-	      for (var prop in props) {
-	          this[prop] = props[prop];
-	      }
-    }
-}
-
-Sprite.prototype.draw = function(ctx) {
-    SpriteSheet.draw(ctx,this.sprite,this.x,this.y,this.frame);
-}
-
-
-var Clock = function(seg,callback) {     //si reg = true cuenta regresiva
-  
-  
-  var cuenta= function(){
-      seg--;
-      if (seg>0) {
-		setTimeout(function(){cuenta()},1000)
-	  }else{
-		callback();
-	  }
-    }
-
-  cuenta();
-
-  this.draw = function(ctx) {
-    var oy= 90;
-    if (seg <6 ){
-        ctx.font = "bold 100px arial";
-        ctx.fillStyle= "red";
-        oy= 130;
-    }else if (seg<11){  
-        ctx.font = "bold 30px arial";
-        ctx.fillStyle= "red";
-    }else {
-        ctx.font = "bold 30px arial";
-        ctx.fillStyle= "#FFFFFF";
-    }
-    
-
-    var txt =  seg + "\'\'" ;
-
-    ctx.fillText(txt,Game.width/2,oy);
-    ctx.restore();
-
-  };
-
-  this.step = function(dt) {};
-};
-
-
-var GamePoints = function(x) {
-  Game.points  = x;
-
-
-  this.draw = function(ctx) {
-    ctx.font = "bold 30px arial";
-    ctx.fillStyle= "#FFFFFF";
-
-    var txt = 'Points: '+Game.points;
-
-
-    ctx.fillText(txt,Game.width/2,50 - 10);
-    ctx.restore();
-
-  };
-
-  this.step = function(dt) { };
-};
-
-
+///////////////////////////////////////////////////////////////////////////// EVENTOS DE TOUCH
 var touch ={
   x:0,
   y:0,
@@ -511,6 +402,9 @@ var touch ={
   },
 };
 
+
+////////////////////////////////////////////////////////////////////////////////////// SOUND
+// No suena en el movil, habrá que hacerlo con la API 
 var Sound= new function(){
         //loaded:true,
         //loadedCount:0, // Assets that have been loaded so far
