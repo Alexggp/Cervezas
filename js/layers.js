@@ -78,38 +78,37 @@ var TitleScreen = function TitleScreen(title,subtitle,callback) {
 };
 
 ////////////////////////////////////////////////////////////////////////////////// CLOCK
-var Clock = function(seg,callback) {  
+var Clock = function() {  
   
+  
+    
   
   var cuenta= function(){
-      seg--;
-      if (seg>0) {
-		setTimeout(function(){cuenta()},1000)
-	  }else{
-		callback();
-	  }
-    }
 
+      if (Game.points1!=3 && Game.points2!=3){
+		Game.time++;
+        setTimeout(function(){cuenta()},100);
+        
+        
+      }    
+    
+  }
   cuenta();
+  
 
   this.draw = function(ctx) {
-    var oy= 90;
-    if (seg <6 ){
-        ctx.font = "bold 100px arial";
-        ctx.fillStyle= "red";
-        oy= 130;
-    }else if (seg<11){  
-        ctx.font = "bold 30px arial";
-        ctx.fillStyle= "red";
-    }else {
-        ctx.font = "bold 30px arial";
-        ctx.fillStyle= "#FFFFFF";
-    }
+
+	ctx.font = "bold 30px arial";
+	ctx.fillStyle= "#FFFFFF";
     
-
-    var txt =  seg + "\'\'" ;
-
-    ctx.fillText(txt,Game.width/2,oy);
+	
+	var minutes = Math.floor(Game.time / 600);
+    var seconds = ((Game.time % 600) / 10).toFixed(0);
+	
+	var seconds = ("0" + seconds).slice (-2);    //to put leading 0 if seconds < 10
+    var txt =minutes+"\'" + seconds + "\'\'" ;
+	
+    ctx.fillText(txt,60,40);
     ctx.restore();
 
   };
@@ -118,21 +117,23 @@ var Clock = function(seg,callback) {
 };
 
 //////////////////////////////////////////////////////////////////////////////////// GAME POINTS
-var GamePoints = function(x) {
-  Game.points  = x;
+var GamePoints = function() {
 
+	this.draw = function(ctx) {
+		var ox=150;
+		
+		ctx.font = "bold 30px arial";
+		ctx.fillStyle= "#FFFFFF";	
+		var txt = 'x'+Game.points;
+		ctx.fillText(txt,ox,40);	
 
-  this.draw = function(ctx) {
-    ctx.font = "bold 30px arial";
-    ctx.fillStyle= "#FFFFFF";
-
-    var txt = 'Points: '+Game.points;
-
-
-    ctx.fillText(txt,Game.width/2,50 - 10);
-    ctx.restore();
-
-  };
-
-  this.step = function(dt) { };
+		var chapaPoints= new Image();
+		chapaPoints.src = "images/sprites.png";
+		ctx.drawImage(chapaPoints,
+			  0, 212,
+			  29 , 29 ,
+			  ox+txt.length*10, 15,
+			  29, 29);	
+	};
+	this.step = function(dt) { };
 };

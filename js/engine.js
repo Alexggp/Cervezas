@@ -24,10 +24,12 @@ var Game = new function() {
 		
 		// Chapucilla momentanea: añadimos un listener para poder hacer fullscreen,
 		// fullscreen no puede lanzarse solo, necesita un evento de usuario por motivos de seguridad... 
-		this.canvas.addEventListener("click",Game.fullscreen);
+		//this.canvas.addEventListener("click",Game.fullscreen);
 		
-		//Contador de puntos a cero
+		//Contador de puntos y tiempo a cero
 		this.points=0;
+		this.time=0;
+		
 		
 		//para movil
 		this.canvasMultiplier =1;    //constante de proporcionalidad de los objetos y la pantalla

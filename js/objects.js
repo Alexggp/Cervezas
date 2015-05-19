@@ -198,13 +198,11 @@ var Splash = function(ox,oy) {
     this.y=oy-150;
     this.w=500;
     this.h=500;
-    var capa = $('<canvas/>')
-	.attr('width', Game.width)
-	.attr('height', Game.height)[0];
 
 
 
-    var capaCtx = capa.getContext("2d");
+
+    
 
 	var background = new Image();
     background.src = "images/splash.png";
