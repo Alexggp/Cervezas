@@ -138,12 +138,12 @@ var GamePoints = function() {
 	this.step = function(dt) { };
 };
 
-var Counter = function(callback){
+var Coundown = function(callback){
 	
 
 	
-	var counterImg= new Image();
-	counterImg.src = "images/counter.jpg";
+	var countdownImg= new Image();
+	countdownImg.src = "images/countdown.png";
 	var w=84;
 	var h=210;
 	var paint=true;
@@ -180,7 +180,7 @@ var Counter = function(callback){
 		var txt = 'x'+Game.points;
 		ctx.fillText(txt,ox,40);	
 		if (paint) {
-			  ctx.drawImage(counterImg,
+			  ctx.drawImage(countdownImg,
 			  14+((frame-1) * w), 10,
 			  w , h ,
 			  Game.width-w/1.5-20, 20,

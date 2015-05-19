@@ -12,7 +12,7 @@ var playGame = function() {
     Game.setGame();   //puntuaciones a 0
     Game.setBoard(4,new Clock());
     Game.setBoard(2,new GamePoints());
-    Game.setBoard(3,new Counter(endGame));
+    Game.setBoard(3,new Coundown(endGame));
     
     var board = new GameBoard();
     //board.add(new Splash(401,401));
