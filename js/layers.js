@@ -49,10 +49,10 @@ var TitleScreen = function TitleScreen(title,subtitle,callback) {
 	
     this.step = function(dt) {
 		if(!mouse.down) up = true;
-		if(up && mouse.down && callback) callback();
+		if(up && mouse.down) {console.log("true"); callback()};
 		
 		if(!touch.down) up = true;
-		if(up && touch.down && callback) callback();
+		if(up && touch.down) {console.log("true"); callback()};
 		
     };
 
@@ -80,16 +80,14 @@ var TitleScreen = function TitleScreen(title,subtitle,callback) {
 ////////////////////////////////////////////////////////////////////////////////// CLOCK
 var Clock = function() {  
   
-  
+  this.stop = false;
     
   
   var cuenta= function(){
 
-      if (Game.points1!=3 && Game.points2!=3){
+      if (!Clock.stop){
 		Game.time++;
         setTimeout(function(){cuenta()},100);
-        
-        
       }    
     
   }
@@ -119,6 +117,9 @@ var Clock = function() {
 //////////////////////////////////////////////////////////////////////////////////// GAME POINTS
 var GamePoints = function() {
 
+	var chapaPoints= new Image();
+	chapaPoints.src = "images/sprites.png";
+
 	this.draw = function(ctx) {
 		var ox=150;
 		
@@ -127,8 +128,7 @@ var GamePoints = function() {
 		var txt = 'x'+Game.points;
 		ctx.fillText(txt,ox,40);	
 
-		var chapaPoints= new Image();
-		chapaPoints.src = "images/sprites.png";
+
 		ctx.drawImage(chapaPoints,
 			  0, 212,
 			  29 , 29 ,
@@ -137,3 +137,56 @@ var GamePoints = function() {
 	};
 	this.step = function(dt) { };
 };
+
+var Counter = function(callback){
+	
+
+	
+	var counterImg= new Image();
+	counterImg.src = "images/counter.jpg";
+	var w=84;
+	var h=210;
+	var paint=true;
+	
+	var countdown= function(){
+		Game.parcial--;
+		console.log(Game.parcial, 'asdas')
+		if (Game.parcial>0){
+			setTimeout(function(){countdown()},4000);
+		}else{
+			paint=false;
+			callback();
+		}
+        
+    
+	}
+	setTimeout(function(){countdown()},3000);
+	
+	this.step = function(dt) {
+		frame=Math.floor(Game.parcial);
+		if (frame<1) {
+			frame=1;
+		}
+		if (frame>5) {
+			frame=5;
+		}
+	};
+	
+	this.draw = function(ctx) {
+		var ox=150;
+		
+		ctx.font = "bold 30px arial";
+		ctx.fillStyle= "#FFFFFF";	
+		var txt = 'x'+Game.points;
+		ctx.fillText(txt,ox,40);	
+		if (paint) {
+			  ctx.drawImage(counterImg,
+			  14+((frame-1) * w), 10,
+			  w , h ,
+			  Game.width-w/1.5-20, 20,
+			  w/1.5, h/1.5);
+		}
+	
+	};
+}
+

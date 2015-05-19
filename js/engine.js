@@ -26,11 +26,8 @@ var Game = new function() {
 		// fullscreen no puede lanzarse solo, necesita un evento de usuario por motivos de seguridad... 
 		//this.canvas.addEventListener("click",Game.fullscreen);
 		
-		//Contador de puntos y tiempo a cero
-		this.points=0;
-		this.time=0;
-		
-		
+
+		this.setGame();
 		//para movil
 		this.canvasMultiplier =1;    //constante de proporcionalidad de los objetos y la pantalla
 		
@@ -56,8 +53,15 @@ var Game = new function() {
 	
     var boards = [];
 
-
+	this.setGame=function(){
+		//Contador de puntos y tiempo a cero, parcial es el contador de vida de 0 a 5
+		this.points=0;
+		this.time=0;
+		this.parcial=5;
+		Clock.stop=false;
+	}
 	this.fullscreen= function(){
+		//window.scrollTo(0,document.body.scrollHeight);
         var el = Game.canvas;
 		if(el.requestFullScreen) {
 			el.requestFullScreen();
@@ -96,6 +100,8 @@ var Game = new function() {
     // Son capas: se dibujan de menor num a mayor
     // Cada capa tiene que tener en su interfaz step() y draw()
     this.setBoard = function(num,board) { boards[num] = board; };
+
+	
 	
 	this.setupMobile = function() {
 

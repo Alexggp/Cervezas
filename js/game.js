@@ -9,9 +9,11 @@ var startGame = function() {
 
 var playGame = function() {
     //Añadidos el reloj y el marcador, si el marcador llega a 0, callback=startGame()
-    Game.setBoard(3,new Clock());
-    Game.setBoard(4,new GamePoints());
-    //
+    Game.setGame();   //puntuaciones a 0
+    Game.setBoard(4,new Clock());
+    Game.setBoard(2,new GamePoints());
+    Game.setBoard(3,new Counter(endGame));
+    
     var board = new GameBoard();
     //board.add(new Splash(401,401));
     
@@ -24,7 +26,9 @@ var playGame = function() {
     
 }
 var endGame = function(){
-
+    Clock.stop=true;
+    alert('record: '+Game.time/10+' segundos');
+    
     Game.setBoard(1,new TitleScreen("GAME OVER!!!!", 
                                     "PRESS TO PLAY AGAIN",
                                     playGame));

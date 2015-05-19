@@ -63,6 +63,7 @@ var Beer = function(xx,yy) {
                 
                 this.captured=true;
                 Game.points++;
+                Game.parcial+=0.5;
                 if(Sound.extension) Sound.SoundPlay("beer_open");
                 this.board.add(new Chapa(this.x,this.y,this.vx));
 
@@ -73,6 +74,7 @@ var Beer = function(xx,yy) {
                 
                 this.captured=true;
                 Game.points++;
+                Game.parcial+=0.5;
                 if(Sound.extension) Sound.SoundPlay("beer_open");
                 this.board.add(new Chapa(this.x,this.y,this.vx));
 
