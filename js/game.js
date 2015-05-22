@@ -20,7 +20,6 @@ var playGame = function() {
   
     board.add(new Beer(420,400));
 
-   
     Game.setBoard(1,board);
 
     
@@ -33,6 +32,28 @@ var endGame = function(){
                                     "PRESS TO PLAY AGAIN",
                                     playGame));
 }
+
+var gameLoop = function(board){
+        var even = _.find(board.objects, function(obj){ return obj.sprite == "bottle"; });
+    	if (!even) {                                  
+            var nextTrhowNumber = Math.floor((Math.random() * (4-1)) + 1);
+            for (i=0; i<nextTrhowNumber; i++) {
+                Math.random() < 0.80 ? board.add(new Beer()) : board.add(new Juice());
+				
+            }
+        }
+        if (Game.time>Game.parcialTime) {
+            console.log(Game.parcialVel)
+            Game.parcialTime+=Game.parcialTimeFactor;
+            if (Game.parcialVel<Game.maxpacialVel) {
+                Game.parcialVel+=0.25;  
+            }
+            
+        }
+        
+        
+}
+
 
 
 $(function() {

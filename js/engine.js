@@ -53,6 +53,12 @@ var Game = new function() {
 		this.time=0;
 		this.parcial=5;
 		Clock.stop=false;
+		this.parcialTimeFactor=300;
+		this.parcialTime=this.parcialTimeFactor;
+		this.parcialVel=1;
+		this.maxpacialVel=2;
+		this.maxLiveLvl=6;
+		
 	}
 	
 
@@ -206,14 +212,7 @@ var GameBoard = function() {
 		this.iterate('step',dt);
 		this.finalizeRemoved();
 		
-		if (this.objects.length==0) {
-                                  
-            var nextTrhowNumber = Math.floor((Math.random() * (4-1)) + 1);
-            for (i=0; i<nextTrhowNumber; i++) {
-                Math.random() < 0.80 ? this.add(new Beer()) : this.add(new Juice());
-				
-            }
-        }
+		gameLoop(this);
 		
     };
 

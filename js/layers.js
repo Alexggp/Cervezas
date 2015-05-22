@@ -49,10 +49,10 @@ var TitleScreen = function TitleScreen(title,subtitle,callback) {
 	
     this.step = function(dt) {
 		if(!mouse.down) up = true;
-		if(up && mouse.down) {console.log("true"); callback()};
+		if(up && mouse.down) { callback()};
 		
 		if(!touch.down) up = true;
-		if(up && touch.down) {console.log("true"); callback()};
+		if(up && touch.down) { callback()};
 		
     };
 
@@ -150,7 +150,7 @@ var Coundown = function(callback){
 	
 	var countdown= function(){
 		Game.parcial--;
-		console.log(Game.parcial, 'asdas')
+		console.log('parcial',Game.parcial)
 		if (Game.parcial>0){
 			setTimeout(function(){countdown()},4000);
 		}else{
@@ -169,6 +169,7 @@ var Coundown = function(callback){
 		}
 		if (frame>5) {
 			frame=5;
+			Game.parcial=Game.maxLiveLvl; //Nivel de vida máxima que pueden tener
 		}
 	};
 	

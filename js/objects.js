@@ -36,12 +36,14 @@ var Beer = function(xx,yy) {
 
     // vy marca el margen de distancia de subida, al que se le suma this.G
     // cuando vy deja de ser negativo, el objeto dejara de subir y caera.
+    //Game.canvasMultiplayer ajusta la velocidad al tamaño de la pantalla, Game.parcialVel acelera la velocidad en funcion del tiempo
+    
     
     this.vy = - Math.floor((Math.random() * (500-300) ) + 300)*Game.canvasMultiplier;
     this.G = Math.floor((Math.random() * (7 -3)) + 3)*Game.canvasMultiplier;
     
     
-    this.vx = Math.floor((Math.random() * (650-400)) + 400) * this.d*Game.canvasMultiplier;
+    this.vx = Math.floor((Math.random() * (650-400)) + 400) * this.d*Game.canvasMultiplier*Game.parcialVel;
     
  
     this.step = function(dt) {    
@@ -63,7 +65,7 @@ var Beer = function(xx,yy) {
                 
                 this.captured=true;
                 Game.points++;
-                Game.parcial+=0.5;
+                Game.parcial+=0.5/Game.parcialVel;   //aumenta la vida, en funcion del tiempo que llevemos jugando(parcialVel)
                 if(Sound.extension) Sound.SoundPlay("beer_open");
                 this.board.add(new Chapa(this.x,this.y,this.vx));
 
@@ -74,7 +76,7 @@ var Beer = function(xx,yy) {
                 
                 this.captured=true;
                 Game.points++;
-                Game.parcial+=0.5;
+                Game.parcial+=0.5/Game.parcialVel;
                 if(Sound.extension) Sound.SoundPlay("beer_open");
                 this.board.add(new Chapa(this.x,this.y,this.vx));
 
