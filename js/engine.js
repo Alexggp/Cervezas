@@ -1,12 +1,3 @@
-//$(document).ready(function() {
-//
-//	$( "#container" ).click(function() {
-//      document.documentElement.webkitRequestFullScreen();
-//
-//	});
-//
-//
-//});
 
 
 

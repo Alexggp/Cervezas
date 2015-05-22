@@ -56,6 +56,3 @@ var gameLoop = function(board){
 
 
 
-$(function() {
-    Game.initialize("game",sprites,startGame);
-});
