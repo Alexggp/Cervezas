@@ -21,12 +21,6 @@ var Game = new function() {
 		if(!this.ctx) { return alert("Please upgrade your browser to play"); }
 		
 		
-		
-		// Chapucilla momentanea: añadimos un listener para poder hacer fullscreen,
-		// fullscreen no puede lanzarse solo, necesita un evento de usuario por motivos de seguridad... 
-		//this.canvas.addEventListener("click",Game.fullscreen);
-		
-
 		this.setGame();
 		//para movil
 		this.canvasMultiplier =1;    //constante de proporcionalidad de los objetos y la pantalla
@@ -60,22 +54,7 @@ var Game = new function() {
 		this.parcial=5;
 		Clock.stop=false;
 	}
-	this.fullscreen= function(){
-		//window.scrollTo(0,document.body.scrollHeight);
-        var el = Game.canvas;
-		if(el.requestFullScreen) {
-			el.requestFullScreen();
-	    }
-        if(el.webkitRequestFullScreen) {
-			el.webkitRequestFullScreen();
-        }
-        else {
-			el.mozRequestFullScreen();
-        }
-		Game.canvas.removeEventListener("click",Game.fullscreen); 
-		setTimeout(function(){ Game.setupDimensions() }, 500);
-	}    
-
+	
 
 
 
