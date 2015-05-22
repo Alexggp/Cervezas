@@ -102,20 +102,22 @@ var Game = new function() {
 	this.setupDimensions= function(){
 		
 	    w = window.innerWidth, h = window.innerHeight;
-		console.log(w,h);
+		//console.log(w,h);
 
 		this.canvas.style.position='absolute';
         this.canvas.style.left="0px";
         this.canvas.style.top="0px";
-        this.canvasMultiplier=w/this.canvas.width;
 
-		
 		
 		this.canvas.width=w;
 		this.canvas.height=h;
 		this.width=this.canvas.width;
         this.height=this.canvas.height;
         
+		
+		this.canvasMultiplier=this.canvas.width/1280;
+
+		
 		$('#game').height(h);
 		$('#game').width(w);
           
@@ -283,7 +285,7 @@ var SpriteSheet = new function() {
                       s.sy, 
                       s.w, s.h, 
                       Math.floor(x), Math.floor(y),
-                      s.w, s.h);
+                      s.w*Game.canvasMultiplier, s.h*Game.canvasMultiplier);
     };
 }
 
@@ -297,8 +299,8 @@ Sprite.prototype.setup = function(sprite,props) {
     this.sprite = sprite;
     this.merge(props);
     this.frame = this.frame || 0;
-    this.w =  SpriteSheet.map[sprite].w;
-    this.h =  SpriteSheet.map[sprite].h;
+    this.w =  SpriteSheet.map[sprite].w*Game.canvasMultiplier;
+    this.h =  SpriteSheet.map[sprite].h*Game.canvasMultiplier;
 }
 
 Sprite.prototype.merge = function(props) {

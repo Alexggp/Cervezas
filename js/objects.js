@@ -198,8 +198,8 @@ var Splash = function(ox,oy) {
     (ox-200)
     this.x=ox-200;
     this.y=oy-150;
-    this.w=500;
-    this.h=500;
+    this.w=500*Game.canvasMultiplier;
+    this.h=500*Game.canvasMultiplier;
 
 
 

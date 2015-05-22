@@ -15,7 +15,7 @@ var playGame = function() {
     Game.setBoard(3,new Coundown(endGame));
     
     var board = new GameBoard();
-    //board.add(new Splash(401,401));
+    //board.add(new Splash(401,201));
     
   
     board.add(new Beer(420,400));
@@ -27,7 +27,7 @@ var playGame = function() {
 }
 var endGame = function(){
     Clock.stop=true;
-    alert('record: '+Game.time/10+' segundos');
+    //alert('record: '+Game.time/10+' segundos');
     
     Game.setBoard(1,new TitleScreen("GAME OVER!!!!", 
                                     "PRESS TO PLAY AGAIN",
