@@ -37,11 +37,11 @@ var Beer = function(xx,yy) {
     // vy marca el margen de distancia de subida, al que se le suma this.G
     // cuando vy deja de ser negativo, el objeto dejara de subir y caera.
     
-    this.vy = - Math.floor((Math.random() * (500-300) ) + 300);
-    this.G = Math.floor((Math.random() * (7 -3)) + 3);
+    this.vy = - Math.floor((Math.random() * (500-300) ) + 300)*Game.canvasMultiplier;
+    this.G = Math.floor((Math.random() * (7 -3)) + 3)*Game.canvasMultiplier;
     
     
-    this.vx = Math.floor((Math.random() * (650-400)) + 400) * this.d;
+    this.vx = Math.floor((Math.random() * (650-400)) + 400) * this.d*Game.canvasMultiplier;
     
  
     this.step = function(dt) {    
@@ -140,19 +140,10 @@ var Juice = function(xx,yy) {
     else{
             this.x = Game.width;
     }
-    
-    // haremos aleatoria la altura, de manera que nunca sobrepase el limite superior
-    // y que salgan de la mitad inferior de la pantalla
-    this.y = Math.floor((Math.random() * (2*Game.height/3 - Game.height/3)) + (Game.height/3));
-
-    // vy marca el margen de distancia de subida, al que se le suma this.G
-    // cuando vy deja de ser negativo, el objeto dejara de subir y caera.
-    
-    this.vy = - Math.floor((Math.random() * (500-300) ) + 300);
-    this.G = Math.floor((Math.random() * (7 -3)) + 3);
-    
-    
-    this.vx = Math.floor((Math.random() * (650-400)) + 400) * this.d;
+    this.y = Math.floor((Math.random() * (2*Game.height/3 - Game.height/3)) + (Game.height/3));    
+    this.vy = - Math.floor((Math.random() * (200-100) ) + 100)*Game.canvasMultiplier;
+    this.G = Math.floor((Math.random() * (3 -1)) + 1)*Game.canvasMultiplier;       
+    this.vx = Math.floor((Math.random() * (450-200)) + 200) * this.d*Game.canvasMultiplier;
     
  
     this.step = function(dt) {    
@@ -161,14 +152,11 @@ var Juice = function(xx,yy) {
             //this.x =xx;
             //this.y = yy;
             //
-            this.vy=this.vy+this.G; // cuando vy deja de ser negativo, el objeto dejara de subir y caera.
-            
+            this.vy=this.vy+this.G; // cuando vy deja de ser negativo, el objeto dejara de subir y caera.         
             // Si el objeto sale de la pantalla lo eliminamos de la lista de objetos
             if(this.y > Game.height || this.x< -this.w || this.x > Game.width) {                   
                 this.board.remove(this);      // lo eliminamos de la lista de objetos del board                  
             }
-
-
             var underSplash= this.board.collide(this,SPLASH_OBJECT);
             //console.log(underSplash);
             if(mouse.checkMouse(this) && !this.captured && !underSplash){   
@@ -200,11 +188,6 @@ var Splash = function(ox,oy) {
     this.y=oy-150;
     this.w=500*Game.canvasMultiplier;
     this.h=500*Game.canvasMultiplier;
-
-
-
-
-    
 
 	var background = new Image();
     background.src = "images/splash.png";

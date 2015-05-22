@@ -391,6 +391,17 @@ var touch ={
   },
 };
 
+///////////////////////////////////////////////////////////////////////////////////// Listener para cambios en la pantalla
+
+//Listener para detectar cuando cambiamos la orientacion de la pantalla
+    var supportsOrientationChange = "onorientationchange" in window,
+    orientationEvent = supportsOrientationChange ? "orientationchange" : "resize";
+
+    window.addEventListener(orientationEvent, function() {
+        Game.setupDimensions();
+    }, false);
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////// SOUND
 // No suena en el movil, habrá que hacerlo con la API 
