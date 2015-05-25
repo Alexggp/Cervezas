@@ -46,7 +46,7 @@ body {
    margin:20px;
 }
 #Gamefront #board{
-   width:75%;
+   min-width:75%;
    min-height: 400px;
    background-color: #333;
    margin: 0 auto;
