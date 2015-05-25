@@ -1,13 +1,11 @@
 $(document).ready(function() {
 
-	$( "#play" ).click(function() {
-        $( "#pregame" ).hide();
+	$( "#Gamefront #play" ).click(function() {
+        $( "#Gamefront" ).hide();
         $( "#container" ).show();
-
+        Game.initialize("game",sprites,startGame);
 	});
 
-
-    Game.initialize("game",sprites,startGame);
 
 
 

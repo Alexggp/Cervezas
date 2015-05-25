@@ -11,7 +11,7 @@ var Game = new function() {
 		this.ctx = this.canvas.getContext && this.canvas.getContext('2d');
 		if(!this.ctx) { return alert("Please upgrade your browser to play"); }
 		
-		
+
 		this.setGame();
 		//para movil
 		this.canvasMultiplier =1;    //constante de proporcionalidad de los objetos y la pantalla

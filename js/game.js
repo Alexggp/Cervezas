@@ -19,7 +19,6 @@ var playGame = function() {
     
   
     board.add(new Beer(420,400));
-
     Game.setBoard(1,board);
 
     
@@ -43,7 +42,7 @@ var gameLoop = function(board){
             }
         }
         if (Game.time>Game.parcialTime) {
-            console.log(Game.parcialVel)
+            //console.log(Game.parcialVel)
             Game.parcialTime+=Game.parcialTimeFactor;
             if (Game.parcialVel<Game.maxpacialVel) {
                 Game.parcialVel+=0.25;  

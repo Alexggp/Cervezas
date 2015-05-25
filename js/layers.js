@@ -48,8 +48,11 @@ var TitleScreen = function TitleScreen(title,subtitle,callback) {
 		
 		
 	}
- 
-	setTimeout(function(){countdown()},1000);
+
+
+	setTimeout(function(){countdown()},700);
+	
+	
  
  
 	capaCtx.fillStyle = "#101010";
@@ -71,10 +74,10 @@ var TitleScreen = function TitleScreen(title,subtitle,callback) {
 	ctx.fillStyle = "#FFFFFF";
 	ctx.textAlign = "center";
 
-	ctx.font = "bold 40px bangers";
+	ctx.font = "40px bangers";
 	ctx.fillText(title,Game.width/2,Game.height/2-100);
 
-	ctx.font = "bold 20px bangers";
+	ctx.font = "20px bangers";
 	ctx.fillText(subtitle,Game.width/2,Game.height/2 - 60);
 	
 	ctx.font = "bold 100px bangers";
@@ -153,17 +156,22 @@ var Coundown = function(callback){
 	
 	var countdown= function(){
 		Game.parcial--;
-		console.log('parcial',Game.parcial)
+		//console.log('parcial',Game.parcial)
 		if (Game.parcial>0){
 			setTimeout(function(){countdown()},4000);
 		}else{
 			paint=false;
 			callback();
 		}
-        
-    
 	}
-	setTimeout(function(){countdown()},3000);
+	
+
+	if (Game.parcial) {
+		setTimeout(function(){countdown()},3000);
+	}
+		
+	
+	
 	
 	this.step = function(dt) {
 		frame=Math.floor(Game.parcial);
