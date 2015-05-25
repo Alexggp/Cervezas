@@ -2,7 +2,7 @@
 var startGame = function() {
     Game.setBoard(0,new capaClear(0))
     Game.setBoard(1,new TitleScreen("HOW MANY BOTTLES CAN YOU OPEN???", 
-                                    "PRESS THE SPACE BAR TO PLAY",
+                                    "ARE YOU READY??",
                                     playGame));
 }
 
@@ -29,7 +29,7 @@ var endGame = function(){
     //alert('record: '+Game.time/10+' segundos');
     
     Game.setBoard(1,new TitleScreen("GAME OVER!!!!", 
-                                    "PRESS TO PLAY AGAIN",
+                                    "ARE YOU READY???",
                                     playGame));
 }
 

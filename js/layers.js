@@ -31,30 +31,32 @@ var capaClear = function() {
 // http://www.google.com/fonts
 
 var TitleScreen = function TitleScreen(title,subtitle,callback) {
-    var up = false;
 
-    // En cada paso, comprobamos si la tecla ha pasado de no pulsada a
-    // pulsada. Si comienza el juego con la tecla pulsada, hay que
-    // soltarla y
+	var index=5;
 	var capa = $('<canvas/>')
 		.attr('width', Game.width)
 		.attr('height', Game.height)[0];
 	
 	var capaCtx = capa.getContext("2d");
-
+	var countdown=function(){
+		index--;
+		if (index==0) {
+			setTimeout(function(){callback()},700);
+		}else{
+			setTimeout(function(){countdown()},700);
+		}
+		
+		
+	}
+ 
+	setTimeout(function(){countdown()},1000);
+ 
  
 	capaCtx.fillStyle = "#101010";
 	capaCtx.fillRect(0,0,capa.width,capa.height);
 	
 	
-    this.step = function(dt) {
-		if(!mouse.down) up = true;
-		if(up && mouse.down) { callback()};
-		
-		if(!touch.down) up = true;
-		if(up && touch.down) { callback()};
-		
-    };
+    this.step = function(dt) {};
 
     this.draw = function(ctx) {
 		
@@ -70,10 +72,13 @@ var TitleScreen = function TitleScreen(title,subtitle,callback) {
 	ctx.textAlign = "center";
 
 	ctx.font = "bold 40px bangers";
-	ctx.fillText(title,Game.width/2,Game.height/2);
+	ctx.fillText(title,Game.width/2,Game.height/2-100);
 
 	ctx.font = "bold 20px bangers";
-	ctx.fillText(subtitle,Game.width/2,Game.height/2 + 40);
+	ctx.fillText(subtitle,Game.width/2,Game.height/2 - 60);
+	
+	ctx.font = "bold 100px bangers";
+	ctx.fillText(index,Game.width/2,Game.height/2 + 100);
     };
 };
 
@@ -139,9 +144,7 @@ var GamePoints = function() {
 };
 
 var Coundown = function(callback){
-	
 
-	
 	var countdownImg= new Image();
 	countdownImg.src = "images/countdown.png";
 	var w=84;
