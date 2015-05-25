@@ -66,7 +66,7 @@ var Beer = function(xx,yy) {
                 this.captured=true;
                 Game.points++;
                 Game.parcial+=0.5/Game.parcialVel;   //aumenta la vida, en funcion del tiempo que llevemos jugando(parcialVel)
-                if(Sound.extension) Sound.SoundPlay("beer_open");
+                Sound.playGameSound('beer_open', {loop: false, sound: 0.5}) //API
                 this.board.add(new Chapa(this.x,this.y,this.vx));
 
                 
@@ -77,7 +77,7 @@ var Beer = function(xx,yy) {
                 this.captured=true;
                 Game.points++;
                 Game.parcial+=0.5/Game.parcialVel;
-                if(Sound.extension) Sound.SoundPlay("beer_open");
+                Sound.playGameSound('beer_open', {loop: false, sound: 0.5})
                 this.board.add(new Chapa(this.x,this.y,this.vx));
 
                 
@@ -164,13 +164,13 @@ var Juice = function(xx,yy) {
             if(mouse.checkMouse(this) && !this.captured && !underSplash){   
                 this.captured=true;
                 this.board.remove(this);
-                if(Sound.extension) {Sound.SoundPlay("splash")} else {console.log('ajsa')};
+                Sound.playGameSound('splash', {loop: false, sound: 1})
                 this.board.add(new Splash(this.x,this.y));
             }
             if(touch.checkTouch(this) && !this.captured && !underSplash){   
                 this.captured=true;
                 this.board.remove(this);
-                if(Sound.extension) {Sound.SoundPlay("splash")} else {console.log('ajsa')};
+                Sound.playGameSound('splash', {loop: false, sound: 1})
                 this.board.add(new Splash(this.x,this.y));
             }
             

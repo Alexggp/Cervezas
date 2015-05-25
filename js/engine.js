@@ -394,31 +394,84 @@ var touch ={
 
 
 ////////////////////////////////////////////////////////////////////////////////////// SOUND
-// No suena en el movil, habrá que hacerlo con la API 
-var Sound= new function(){
-        //loaded:true,
-        //loadedCount:0, // Assets that have been loaded so far
-        //totalCount:0, // Total number of assets that need to be loaded
-
-        this.mp3Support=false;
-        this.init=function(){
-                // check for sound support
-                var audio = document.createElement('audio');
-                if (audio.canPlayType) {
-                         // Currently canPlayType() returns: "", "maybe" or "probably"
-                         this.mp3Support = true;
-                } else {
-                        //The audio tag is not supported
-                        this.mp3Support = false;
-                }
-                Sound.extension= this.mp3Support;        
-        };
-        this.SoundPlay= function(url){			
-            var audio = new Audio();
-            audio.src = 'audio/'+url+'.mp3';
-            audio.load();
-			audio.play();
-                        
-        }
-        
+// Audio con la API para que suene tambien en el movil
+var Sound = new function(){
+	this.init=function(){
+		if (typeof AudioContext !== 'undefined') {
+		  Game.audio_ctx = new AudioContext();
+		}
+		   
+		function loadMusic(url, cb) {
+		  var req = new XMLHttpRequest();
+		  req.open('GET', url, true);
+		  // XHR2
+		  req.responseType = 'arraybuffer';
+		 
+		  req.onload = function() {
+			Game.audio_ctx.decodeAudioData(req.response, cb);
+		  };
+		 
+		  req.send();
+		}
+		
+		Game.audio = {};
+ 
+		var audio={
+			beer_open:"audio/beer_open.mp3",
+			splash:"audio/splash.mp3"
+		}
+		
+		var loadAudioData = function(name, url) {
+ 
+			// Async
+			loadMusic(url, function(buffer) {
+			  Game.audio[name] = buffer;
+			});
+	   
+		};
+	   
+		for (var name in audio) {
+		  var url = audio[name];
+		  loadAudioData(name, url);
+		}
+	}
+	
+	this.playSound=function(buffer, opt) {
+		opt = opt || {};
+	   
+		var src = Game.audio_ctx.createBufferSource();
+		src.buffer = buffer;
+	   
+		gain_node = Game.audio_ctx.createGain();
+		src.connect(gain_node);
+		 
+		gain_node.connect(Game.audio_ctx.destination);
+		//console.log(gain_node);
+	   
+		if (typeof opt.sound !== 'undefined')
+		  gain_node.gain.value = opt.sound;
+		else
+		  gain_node.gain.value = 1;
+	   
+		// Options
+		if (opt.loop)
+		  src.loop = true;	   
+		src.start(0);
+	}
+	   
+	this.stopSound =function(src) {
+		src.stop(0);
+	  }
+	
+	this.playGameSound=function(name, opt) {
+		opt = opt || {};
+		Sound.playSound( Game.audio[name], opt);
+	}
+	
 }
+
+
+
+
+
+
