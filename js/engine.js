@@ -415,10 +415,12 @@ var Sound = new function(){
 		}
 		
 		Game.audio = {};
- 
+		Game.audio_src = {};
+		
 		var audio={
 			beer_open:"audio/beer_open.mp3",
-			splash:"audio/splash.mp3"
+			splash:"audio/splash.mp3",
+			music:"audio/music.mp3"
 		}
 		
 		var loadAudioData = function(name, url) {
@@ -436,7 +438,7 @@ var Sound = new function(){
 		}
 	}
 	
-	this.playSound=function(buffer, opt) {
+	this.playSound=function(buffer, name, opt) {
 		opt = opt || {};
 	   
 		var src = Game.audio_ctx.createBufferSource();
@@ -455,17 +457,21 @@ var Sound = new function(){
 	   
 		// Options
 		if (opt.loop)
-		  src.loop = true;	   
-		src.start(0);
+		  src.loop = true;
+		src.start();
+		Game.audio_src[name] = src;
 	}
 	   
 	this.stopSound =function(src) {
-		src.stop(0);
+		src.stop();
 	  }
 	
 	this.playGameSound=function(name, opt) {
 		opt = opt || {};
-		Sound.playSound( Game.audio[name], opt);
+		Sound.playSound(Game.audio[name], name, opt);
+	}
+	this.stopGameSound=function(name){
+		Sound.stopSound(Game.audio_src[name]);
 	}
 	
 }

@@ -76,3 +76,10 @@ body {
 {
     list-style-type: none;
 }
+
+#optionsBtn{
+   position:absolute;
+   display: block;
+   float:left;
+   z-index: 10;
+}

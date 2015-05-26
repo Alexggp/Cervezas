@@ -20,10 +20,11 @@ var playGame = function() {
   
     board.add(new Beer(420,400));
     Game.setBoard(1,board);
-
+    if (MusicOn) Sound.playGameSound('music', {loop: true, sound: 0.3})
     
 }
 var endGame = function(){
+    //if (MusicOn) Sound.stopGameSound('music');
     Clock.stop=true;
     //alert('record: '+Game.time/10+' segundos');
     

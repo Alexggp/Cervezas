@@ -45,7 +45,19 @@ $(document).ready(function() {
 
         
     }
-
+  
     fill_ranking(data);
+    
+    AudioOn=true;
+    $('#checkEfx').change(function(){
+        AudioOn = this.checked ? true : false;
+    });
+    
+    MusicOn=true;
+    $('#checkMusic').change(function(){
+        MusicOn = this.checked ? true : false;
+    });
+    
+    
     
 });
