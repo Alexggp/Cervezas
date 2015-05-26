@@ -12,7 +12,7 @@ var playGame = function() {
     Game.setGame();   //puntuaciones a 0
     Game.setBoard(4,new Clock());
     Game.setBoard(2,new GamePoints());
-    Game.setBoard(3,new Coundown(endGame));
+    //Game.setBoard(3,new Coundown(endGame));
     
     var board = new GameBoard();
     //board.add(new Splash(401,201));
@@ -24,7 +24,7 @@ var playGame = function() {
     
 }
 var endGame = function(){
-    //if (MusicOn) Sound.stopGameSound('music');
+    if (MusicOn) Sound.stopGameSound('music');
     Clock.stop=true;
     //alert('record: '+Game.time/10+' segundos');
     
@@ -35,11 +35,10 @@ var endGame = function(){
 
 var gameLoop = function(board){
         var even = _.find(board.objects, function(obj){ return obj.sprite == "bottle"; });
-    	if (!even) {                                  
+    	if (!even) {
             var nextTrhowNumber = Math.floor((Math.random() * (4-1)) + 1);
             for (i=0; i<nextTrhowNumber; i++) {
                 Math.random() < 0.80 ? board.add(new Beer()) : board.add(new Juice());
-				
             }
         }
         if (Game.time>Game.parcialTime) {
@@ -48,10 +47,7 @@ var gameLoop = function(board){
             if (Game.parcialVel<Game.maxpacialVel) {
                 Game.parcialVel+=0.25;  
             }
-            
         }
-        
-        
 }
 
 

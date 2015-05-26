@@ -56,7 +56,9 @@ var Beer = function(xx,yy) {
             
             // Si el objeto sale de la pantalla lo eliminamos de la lista de objetos
             if(this.y > Game.height || this.x< -this.w || this.x > Game.width) {                   
-                this.board.remove(this);      // lo eliminamos de la lista de objetos del board                  
+                if(this.captured){this.board.remove(this)}
+                else{endGame()};      // lo eliminamos de la lista de objetos del board
+                
             }
             
             var underSplash= this.board.collide(this,SPLASH_OBJECT);

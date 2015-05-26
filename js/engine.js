@@ -42,7 +42,7 @@ var Game = new function() {
 		//Contador de puntos y tiempo a cero, parcial es el contador de vida de 0 a 5
 		this.points=0;
 		this.time=0;
-		this.parcial=5;
+		//this.parcial=5;
 		Clock.stop=false;
 		this.parcialTimeFactor=300;
 		this.parcialTime=this.parcialTimeFactor;
@@ -409,8 +409,7 @@ var Sound = new function(){
 		 
 		  req.onload = function() {
 			Game.audio_ctx.decodeAudioData(req.response, cb);
-		  };
-		 
+		  };		 
 		  req.send();
 		}
 		
@@ -464,7 +463,7 @@ var Sound = new function(){
 	   
 	this.stopSound =function(src) {
 		src.stop();
-	  }
+	}
 	
 	this.playGameSound=function(name, opt) {
 		opt = opt || {};

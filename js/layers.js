@@ -41,16 +41,16 @@ var TitleScreen = function TitleScreen(title,subtitle,callback) {
 	var countdown=function(){
 		index--;
 		if (index==0) {
-			setTimeout(function(){callback()},700);
+			setTimeout(function(){callback()},200);
 		}else{
-			setTimeout(function(){countdown()},700);
+			setTimeout(function(){countdown()},200);
 		}
 		
 		
 	}
 
 
-	setTimeout(function(){countdown()},700);
+	setTimeout(function(){countdown()},200);
 	
 	
  
@@ -146,59 +146,59 @@ var GamePoints = function() {
 	this.step = function(dt) { };
 };
 
-var Coundown = function(callback){
-
-	var countdownImg= new Image();
-	countdownImg.src = "images/countdown.png";
-	var w=84;
-	var h=210;
-	var paint=true;
-	
-	var countdown= function(){
-		Game.parcial--;
-		//console.log('parcial',Game.parcial)
-		if (Game.parcial>0){
-			setTimeout(function(){countdown()},4000);
-		}else{
-			paint=false;
-			callback();
-		}
-	}
-	
-
-	if (Game.parcial) {
-		setTimeout(function(){countdown()},3000);
-	}
-		
-	
-	
-	
-	this.step = function(dt) {
-		frame=Math.floor(Game.parcial);
-		if (frame<1) {
-			frame=1;
-		}
-		if (frame>5) {
-			frame=5;
-			Game.parcial=Game.maxLiveLvl; //Nivel de vida máxima que pueden tener
-		}
-	};
-	
-	this.draw = function(ctx) {
-		var ox=150;
-		
-		ctx.font = "bold 30px arial";
-		ctx.fillStyle= "#FFFFFF";	
-		var txt = 'x'+Game.points;
-		ctx.fillText(txt,ox,40);	
-		if (paint) {
-			  ctx.drawImage(countdownImg,
-			  14+((frame-1) * w), 10,
-			  w , h ,
-			  Game.width-w/1.5-20, 20,
-			  w/1.5, h/1.5);
-		}
-	
-	};
-}
+//var Coundown = function(callback){
+//
+//	var countdownImg= new Image();
+//	countdownImg.src = "images/countdown.png";
+//	var w=84;
+//	var h=210;
+//	var paint=true;
+//	
+//	var countdown= function(){
+//		Game.parcial--;
+//		//console.log('parcial',Game.parcial)
+//		if (Game.parcial>0){
+//			setTimeout(function(){countdown()},4000);
+//		}else{
+//			paint=false;
+//			callback();
+//		}
+//	}
+//	
+//
+//	if (Game.parcial) {
+//		setTimeout(function(){countdown()},3000);
+//	}
+//		
+//	
+//	
+//	
+//	this.step = function(dt) {
+//		frame=Math.floor(Game.parcial);
+//		if (frame<1) {
+//			frame=1;
+//		}
+//		if (frame>5) {
+//			frame=5;
+//			Game.parcial=Game.maxLiveLvl; //Nivel de vida máxima que pueden tener
+//		}
+//	};
+//	
+//	this.draw = function(ctx) {
+//		var ox=150;
+//		
+//		ctx.font = "bold 30px arial";
+//		ctx.fillStyle= "#FFFFFF";	
+//		var txt = 'x'+Game.points;
+//		ctx.fillText(txt,ox,40);	
+//		if (paint) {
+//			  ctx.drawImage(countdownImg,
+//			  14+((frame-1) * w), 10,
+//			  w , h ,
+//			  Game.width-w/1.5-20, 20,
+//			  w/1.5, h/1.5);
+//		}
+//	
+//	};
+//}
 
