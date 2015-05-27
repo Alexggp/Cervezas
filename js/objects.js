@@ -2,12 +2,14 @@
 sprites = {
     bottle: { sx: 0, sy: 0, w: 57, h: 200, frames: 3 },
     chapa: { sx: 0, sy: 212, w: 29 , h: 29, frames: 4 },
-    juice: { sx: 0, sy: 246, w: 81 , h: 200, frames: 3 }
+    juice: { sx: 0, sy: 246, w: 81 , h: 200, frames: 3 },
+    barrel: { sx: 0, sy: 446, w: 86, h: 156, frames: 1 }
 };
 
 
 var SPLASH_OBJECT       =   1,
-    JUICE_OBJECT        =   2;
+    JUICE_OBJECT        =   2,
+    BARREL_OBJECT       =   4;
 
 
 
@@ -213,5 +215,69 @@ var Splash = function(ox,oy,frame) {
 }
 Splash.prototype.type = SPLASH_OBJECT;
 
+var Barrel = function(xx,yy) {
+    
+    this.setup('barrel', {frame:0, reloadTime:0.25});
+    this.subFrame = 0;
+    this.captured=false;   //indica si hemos pinchado en el objeto
+    
+    
+    // factor de direccion, decide de que lado de la pantalla sale el objeto
+    this.d = Math.random() < 0.5 ? -1 : 1;
+    if (this.d>0) {
+        this.x = -this.w;
+    }
+    else{
+            this.x = Game.width;
+    }
+    
+    // haremos aleatoria la altura, de manera que nunca sobrepase el limite superior
+    // y que salgan de la mitad inferior de la pantalla
+    this.y = Math.floor((Math.random() * (2*Game.height/3 - Game.height/3)) + (Game.height/3));
 
+    // vy marca el margen de distancia de subida, al que se le suma this.G
+    // cuando vy deja de ser negativo, el objeto dejara de subir y caera.
+    //Game.canvasMultiplayer ajusta la velocidad al tamaño de la pantalla, Game.parcialVel acelera la velocidad en funcion del tiempo
+    
+    
+    this.vy = - 900;
+    this.G = 15;
+    
+    
+    this.vx = 1200;
+    
+ 
+    this.step = function(dt) {    
+            this.x += this.vx * dt;
+            this.y += this.vy * dt;
+            //this.x =xx;
+            //this.y = yy;
+            
+            this.vy=this.vy+this.G; // cuando vy deja de ser negativo, el objeto dejara de subir y caera.
+            
+            // Si el objeto sale de la pantalla lo eliminamos de la lista de objetos
+            if(this.y > Game.height || this.x< -this.w || this.x > Game.width) {                   
+                this.board.remove(this)      // lo eliminamos de la lista de objetos del board
+                
+            }
+            
+            var underSplash= this.board.collide(this,SPLASH_OBJECT);
+            
+            if(mouse.checkMouse(this) && !this.captured && !underSplash){               
+                this.captured=true;
+                this.board.remove(this); 
+                Game.points=Game.points+5;
+                
+            }
+            if(touch.checkTouch(this) && !this.captured && !underSplash){
+                
+                this.captured=true;
+                this.board.remove(this); 
+                Game.points=Game.points+5;
+                //this.board.add(new Chapa(this.x,this.y,this.vx));   
+            }
+          
+    }
+}
+Barrel.prototype = new Sprite();
 

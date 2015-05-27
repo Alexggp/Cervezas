@@ -37,6 +37,11 @@ var TitleScreen = function TitleScreen(title,subtitle,callback) {
 		.attr('width', Game.width)
 		.attr('height', Game.height)[0];
 	
+	
+	if (Game.points) {
+		title='You got  '+Game.points+'  points!!'
+	}
+	
 	var capaCtx = capa.getContext("2d");
 	var countdown=function(){
 		index--;

@@ -13,7 +13,7 @@ var playGame = function() {
     Game.setBoard(4,new Clock());
     Game.setBoard(2,new GamePoints());
     //Game.setBoard(3,new Coundown(endGame));
-    
+    barrelTime = setBarrelTime();
     var board = new GameBoard();
     //board.add(new Juice(401,201));
     
@@ -34,6 +34,9 @@ var endGame = function(){
 }
 
 var gameLoop = function(board){
+        
+        
+    
         var even = _.find(board.objects, function(obj){ return obj.sprite == "bottle"; });
     	if (!even) {
             var nextTrhowNumber = Math.floor((Math.random() * (4-1)) + 1);
@@ -48,11 +51,21 @@ var gameLoop = function(board){
                 Game.parcialVel+=0.25;  
             }
         }
+        if (Game.time>barrelTime) {
+            board.add(new Barrel());
+            barrelTime= setBarrelTime();
+        }
 }
 
 
 var newJuice = function(board){
     var type = Math.floor(Math.random() * (3));
-    console.log(type)
     board.add(new Juice(type));
+
+}
+
+var setBarrelTime=function(){
+    var interval= Math.floor((Math.random() * (200 -100)) + 100)*Game.canvasMultiplier;
+    console.log(Game.time, interval, Game.time + interval)
+    return Game.time+interval;
 }
