@@ -2,7 +2,7 @@
 sprites = {
     bottle: { sx: 0, sy: 0, w: 57, h: 200, frames: 3 },
     chapa: { sx: 0, sy: 212, w: 29 , h: 29, frames: 4 },
-    juice: { sx: 0, sy: 250, w: 78 , h: 200, frames: 1 }
+    juice: { sx: 0, sy: 246, w: 81 , h: 200, frames: 3 }
 };
 
 
@@ -123,9 +123,9 @@ Chapa.prototype = new Sprite();
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////// JUICE
-var Juice = function(xx,yy) {
+var Juice = function(type) {
     
-    this.setup('juice', {frame:0, reloadTime:0.25});
+    this.setup('juice', {frame:type, reloadTime:0.25});
     this.subFrame = 0;
     this.captured=false;   //indica si hemos pinchado en el objeto
     
@@ -150,7 +150,7 @@ var Juice = function(xx,yy) {
             this.y += this.vy * dt;
             //this.x =xx;
             //this.y = yy;
-            //
+            
             this.vy=this.vy+this.G; // cuando vy deja de ser negativo, el objeto dejara de subir y caera.         
             // Si el objeto sale de la pantalla lo eliminamos de la lista de objetos
             if(this.y > Game.height || this.x< -this.w || this.x > Game.width) {                   
@@ -162,7 +162,7 @@ var Juice = function(xx,yy) {
                 this.captured=true;
                 this.board.remove(this);
                 if (AudioOn) Sound.playGameSound('splash', {loop: false, sound: 1})
-                this.board.add(new Splash(this.x,this.y));
+                this.board.add(new Splash(this.x,this.y,this.frame));
             }
             if(touch.checkTouch(this) && !this.captured && !underSplash){   
                 this.captured=true;
@@ -179,7 +179,7 @@ Juice.prototype.type = JUICE_OBJECT;
 
 //////////////////////////////////////////////////////////////////////////////////////////////// SPLASH
 //Splash es la mancha verde que sale cuando capturamos un brick de zumo
-var Splash = function(ox,oy) {
+var Splash = function(ox,oy,frame) {
 
     this.sprite="splash";
     (ox-200)
@@ -189,7 +189,17 @@ var Splash = function(ox,oy) {
     this.h=500*Game.canvasMultiplier;
 
 	var background = new Image();
-    background.src = "images/splash.png";
+    
+    if (frame==0) {
+        var color='green'
+    }
+    else if (frame==1) {
+        var color='orange'
+    }
+    else if (frame==2) {
+        var color='red'
+    }
+    background.src = "images/splash_"+color+".png";
     
     this.draw = function(ctx) {
 		ctx.drawImage(background,

@@ -15,7 +15,7 @@ var playGame = function() {
     //Game.setBoard(3,new Coundown(endGame));
     
     var board = new GameBoard();
-    //board.add(new Splash(401,201));
+    //board.add(new Juice(401,201));
     
   
     board.add(new Beer(420,400));
@@ -38,7 +38,7 @@ var gameLoop = function(board){
     	if (!even) {
             var nextTrhowNumber = Math.floor((Math.random() * (4-1)) + 1);
             for (i=0; i<nextTrhowNumber; i++) {
-                Math.random() < 0.80 ? board.add(new Beer()) : board.add(new Juice());
+                Math.random() < 0.80 ? board.add(new Beer()) : newJuice(board);
             }
         }
         if (Game.time>Game.parcialTime) {
@@ -51,4 +51,8 @@ var gameLoop = function(board){
 }
 
 
-
+var newJuice = function(board){
+    var type = Math.floor(Math.random() * (3));
+    console.log(type)
+    board.add(new Juice(type));
+}
