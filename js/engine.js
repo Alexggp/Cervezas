@@ -467,7 +467,10 @@ var Sound = new function(){
 	
 	this.playGameSound=function(name, opt) {
 		opt = opt || {};
-		Sound.playSound(Game.audio[name], name, opt);
+		if (Game.audio[name]) {
+			Sound.playSound(Game.audio[name], name, opt);
+		}
+		
 		
 		
 	}

@@ -138,6 +138,7 @@ var Juice = function(xx,yy) {
     else{
             this.x = Game.width;
     }
+    
     this.y = Math.floor((Math.random() * (2*Game.height/3 - Game.height/3)) + (Game.height/3));    
     this.vy = - Math.floor((Math.random() * (200-100) ) + 100)*Game.canvasMultiplier;
     this.G = Math.floor((Math.random() * (3 -1)) + 1)*Game.canvasMultiplier;       
