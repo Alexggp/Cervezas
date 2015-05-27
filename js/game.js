@@ -20,7 +20,7 @@ var playGame = function() {
   
     board.add(new Beer(420,400));
     Game.setBoard(1,board);
-    if (MusicOn) Sound.playGameSound('music', {loop: true, sound: 0.3})
+    if (MusicOn) Sound.playGameSound('music', {loop: true, sound: 1})
     
 }
 var endGame = function(){
