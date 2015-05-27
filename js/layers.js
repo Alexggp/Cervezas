@@ -6,14 +6,9 @@
 var capaClear = function() {
 
 
-
-
-
-	var background = new Image();
-    background.src = "images/background.png";
     
     this.draw = function() {
-		Game.ctx.drawImage(background,
+		Game.ctx.drawImage(Game.imgs[3],
 			  0, 0,
 			  1280, 720,
 			  0, 0,
@@ -130,8 +125,6 @@ var Clock = function() {
 //////////////////////////////////////////////////////////////////////////////////// GAME POINTS
 var GamePoints = function() {
 
-	var chapaPoints= new Image();
-	chapaPoints.src = "images/sprites.png";
 
 	this.draw = function(ctx) {
 		var ox=150;
@@ -142,7 +135,7 @@ var GamePoints = function() {
 		ctx.fillText(txt,ox,40);	
 
 
-		ctx.drawImage(chapaPoints,
+		ctx.drawImage(Game.imgs[4],
 			  0, 212,
 			  29 , 29 ,
 			  ox+txt.length*10, 15,

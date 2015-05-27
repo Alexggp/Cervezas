@@ -10,20 +10,20 @@ $(document).ready(function() {
     // datos simulados, deberian llegar como json con un get
     var data ={
         'ranking':[
-            {'name':'Joaquin Armando','points':'26'},
-            {'name':'pepito perez','points':'37'},
-            {'name':'Custodio Trujillo','points':'15'},
-            {'name':'Roldan Cabrera','points':'26'},
-            {'name':'Fulgencio Chavarría','points':'28'},
-            {'name':'Rico Capello','points':'25'},
-            {'name':'Francisco Robles','points':'57'},
-            {'name':'Leandro De Leon','points':'59'},
-            {'name':'Anacleto Noguerra','points':'67'},
-            {'name':'Regulo Ruiz','points':'05'},
-            {'name':'Adrian Gallo','points':'36'},
-            {'name':'Tito Ibarra','points':'87'},              
+            {'name':'Joaquin','points':'26'},
+            {'name':'pepito','points':'37'},
+            {'name':'Custodio','points':'15'},
+            {'name':'Roldan','points':'26'},
+            {'name':'Fulgencio','points':'28'},
+            {'name':'Rico','points':'25'},
+            {'name':'Francisco','points':'57'},
+            {'name':'Leandro','points':'59'},
+            {'name':'Anacleto','points':'67'},
+            {'name':'Regulo','points':'05'},
+            {'name':'Adrian','points':'36'},
+            {'name':'Tito','points':'87'},              
         ],
-        'user': 'Rico Capello',
+        'user': 'Rico',
         'best':{'position':'7','points':'51'}
     }
 
@@ -48,16 +48,18 @@ $(document).ready(function() {
   
     fill_ranking(data);
     
-    AudioOn=true;
-    $('#checkEfx').change(function(){
-        AudioOn = this.checked ? true : false;
-    });
-    
-    MusicOn=true;
-    $('#checkMusic').change(function(){
-        MusicOn = this.checked ? true : false;
-    });
-    
+    AudioOn=false;
+    MusicOn=false;
+    //AudioOn=true;
+    //$('#checkEfx').change(function(){
+    //    AudioOn = this.checked ? true : false;
+    //});
+    //
+    //MusicOn=true;
+    //$('#checkMusic').change(function(){
+    //    MusicOn = this.checked ? true : false;
+    //});
+    //
     
     
 });

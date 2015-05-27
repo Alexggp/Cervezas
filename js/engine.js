@@ -37,7 +37,7 @@ var Game = new function() {
     };
 	
     var boards = [];
-
+	this.boardsReset=function(){boards=[]}
 	this.setGame=function(){
 		//Contador de puntos y tiempo a cero, parcial es el contador de vida de 0 a 5
 		this.points=0;
@@ -253,11 +253,35 @@ var SpriteSheet = new function() {
     // Parámetros: spriteData: parejas con nombre de sprite, rectángulo
     // callback: para llamarla cuando se haya cargado la hoja de
     // sprites
-    this.load = function(spriteData,callback) { 
+    this.load = function(spriteData,callback) {
 	this.map = spriteData;
-	this.image = new Image();
-	this.image.onload = callback;
-	this.image.src = 'images/sprites.png';
+
+
+	function createImages(srcs, fn) {
+		var imgs = [], img;
+		var remaining = srcs.length;
+		for (var i = 0; i < srcs.length; i++) {
+			img = new Image();
+			imgs.push(img);
+			img.onload = function() {
+				--remaining;
+				if (remaining == 0) {
+					callback();
+				}
+			};
+			img.src = srcs[i];
+		}
+		return(imgs);
+	 }
+		 
+		Game.imgs = createImages(['images/splash_green.png', 'images/splash_orange.png', 'images/splash_red.png',"images/background.png","images/sprites.png"]);
+			
+	this.image=Game.imgs[4];
+	
+	
+	
+	
+	
     };
 
     

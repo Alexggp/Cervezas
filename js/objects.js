@@ -190,21 +190,9 @@ var Splash = function(ox,oy,frame) {
     this.w=500*Game.canvasMultiplier;
     this.h=500*Game.canvasMultiplier;
 
-	var background = new Image();
-    
-    if (frame==0) {
-        var color='green'
-    }
-    else if (frame==1) {
-        var color='orange'
-    }
-    else if (frame==2) {
-        var color='red'
-    }
-    background.src = "images/splash_"+color+".png";
     
     this.draw = function(ctx) {
-		ctx.drawImage(background,
+		ctx.drawImage(Game.imgs[frame],
 			  0, 0,
 			  640, 528,
 			  this.x, this.y,
@@ -240,11 +228,11 @@ var Barrel = function(xx,yy) {
     //Game.canvasMultiplayer ajusta la velocidad al tamaño de la pantalla, Game.parcialVel acelera la velocidad en funcion del tiempo
     
     
-    this.vy = - 900;
-    this.G = 15;
+    this.vy = - 900*Game.canvasMultiplier;
+    this.G = 15*Game.canvasMultiplier;
     
     
-    this.vx = 1200;
+    this.vx = 1200*Game.canvasMultiplier;
     
  
     this.step = function(dt) {    

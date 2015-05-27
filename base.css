@@ -33,7 +33,7 @@ body {
 }
 #Gamefront #starter{
    font-family: "Bangers";
-   font-size: 50px;
+   font-size: 4em;
 }
 #Gamefront #taster{
    display:block;
@@ -55,7 +55,7 @@ body {
    margin-top: 5%;
    color: #f0f0f0;
    font-family: "Digital";
-   font-size: 50px;
+   font-size: 4em;
    padding:5%;
 
 }
@@ -82,4 +82,5 @@ body {
    display: block;
    float:left;
    z-index: 10;
+   width: 0 10px;
 }
