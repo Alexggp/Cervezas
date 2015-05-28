@@ -1,9 +1,9 @@
 $(document).ready(function() {
 
-	$( "#Gamefront #play img" ).click(function() {
-        $( "#Gamefront" ).hide();
-        $( "#container" ).show();
-        Game.initialize("game",sprites,startGame);
+    Game.initialize("game",sprites,readyGame);
+
+	$( "#play img" ).click(function() {
+        playGame();
 	});
     
     
@@ -23,26 +23,38 @@ $(document).ready(function() {
             {'name':'Adrian','points':'36'},
             {'name':'Tito','points':'87'},              
         ],
-        'user': 'Rico',
+        'user': 'Adrian',
         'best':{'position':'7','points':'51'}
     }
 
     var fill_ranking = function(data){
         if (data.best.position) {
-            $('#Gamefront #yourBest').html(data.best.position);
-            $('#Gamefront #yourBestTime').html(data.best.points);
+            $('#yourBest').html(data.best.position);
+            $('#yourBestTime').html(data.best.points);
         }
 
         var ranking=_.sortBy(data.ranking, function(obj){return -obj.points});
-        for (var i=0;i<5;i++){
-            $('#Gamefront #ranking ol').append("<li>"+ranking[i].name+"<span class='record'>"+ranking[i].points+"</span></li>");
-        }
-        var even = _.find(ranking, function(obj){ return obj.name == data.user;});
-        if (even) {
-            $('#Gamefront #today').html(ranking.indexOf(even));
-            $('#Gamefront #todayTime').html(even.points);
-        }
 
+        var even = _.find(ranking, function(obj){ return obj.name == data.user;});
+        if (even) {           
+            console.log(ranking.length-ranking.indexOf(even))
+            var x=ranking.length-ranking.indexOf(even);
+            var n=2
+            if (x<3) {
+                n=5-x;
+            }
+            else if (x>ranking.length-2) {
+                n=ranking.indexOf(even)
+            }
+            for (var i=ranking.indexOf(even)-n;i<(ranking.indexOf(even)-n+5);i++){
+                $('#ranking #list').append("<p><span class='left'>"+(i+1)+'. '+ranking[i].name+"</span><span class='right'>"+ranking[i].points+"</span></p><br>");                
+            }
+        }
+        else{
+            for (var i=0;i<5;i++){
+                $('#ranking #list').append("<p><span class='left'>"+(i+1)+'. '+ranking[i].name+"</span><span class='right'>"+ranking[i].points+"</span></p><br>");                
+            }
+        }
         
     }
   

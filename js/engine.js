@@ -4,7 +4,8 @@
 // Objeto singleton Game: se guarda una unica instancia del
 // constructor anónimo en el objeto Game
 var Game = new function() {                                                                  
-
+	
+	this.running=false;
     // Inicializa el juego
     this.initialize = function(canvasElementId,sprite_data,callback) {
 		this.canvas = document.getElementById(canvasElementId);
@@ -32,8 +33,6 @@ var Game = new function() {
 		Sound.init();
 		SpriteSheet.load (sprite_data,callback);
 		
-		this.loop(); 
-		
     };
 	
     var boards = [];
@@ -55,21 +54,27 @@ var Game = new function() {
 
 
 
-    this.loop = function() { 
-	// segundos transcurridos
-	var dt = 10 / 1000;
+    this.loop = function() {
 
-	// Para cada board, de 0 en adelante, se 
-	// llama a su método step() y luego a draw()
-	for(var i=0,len = boards.length;i<len;i++) {
-	    if(boards[i]) { 
-		boards[i].step(dt);
-		boards[i].draw(Game.ctx);
-	    }
-	}
-
-	// Ejecutar dentro de 10 ms
-	setTimeout(Game.loop,10);
+		// segundos transcurridos
+		var dt = 10 / 1000;
+	
+		// Para cada board, de 0 en adelante, se 
+		// llama a su método step() y luego a draw()
+		console.log(Game.running)
+		if(Game.running==true){
+			for(var i=0,len = boards.length;i<len;i++) {
+				if(boards[i]) { 
+				boards[i].step(dt);
+				boards[i].draw(Game.ctx);
+				}
+			}
+		
+			// Ejecutar dentro de 10 ms
+			setTimeout(Game.loop,10)
+		}else{
+			Game.boardsReset();
+		}
     };
     
     // Para cambiar el panel activo en el juego.
@@ -198,12 +203,15 @@ var GameBoard = function() {
     // step() de todos los objetos contenidos en el tablero.  Antes se
     // inicializa la lista de objetos pendientes de borrar, y después
     // se borran los que hayan aparecido en dicha lista
-    this.step = function(dt) { 
-		this.resetRemoved();
-		this.iterate('step',dt);
-		this.finalizeRemoved();
+    this.step = function(dt) {
+
+			this.resetRemoved();
+			this.iterate('step',dt);
+			this.finalizeRemoved();
+			
+			gameLoop(this);
 		
-		gameLoop(this);
+
 		
     };
 

@@ -14,11 +14,14 @@
   <script src='js/layers.js'></script>
   <script src='js/pregame.js'></script>
   
-  <!-- Latest compiled and minified CSS -->
+  <!-- JQUERY.MOBILE -->
+  <script src="jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js"></script>
+  <link rel="stylesheet" href="jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.css">
+
+  
+  <!-- BOOTSTRAP -->
   <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
   <link rel="stylesheet" href="bootstrap/css/font-awesome.min.css">
-
-  <!-- Latest compiled and minified JavaScript -->
   <script src="bootstrap/js/bootstrap.min.js"></script>
  
   <!--<meta name="viewport" content="user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"/>-->
@@ -29,67 +32,63 @@
  
 </head>
 <body>
-  <div id='container' display='none'>
-    <canvas id='game' width='1280' height='720'></canvas>
-  </div>
-  <div id='Gamefront'>
+
+  
+
+    <!--Modal para opciones de sonido!-->
     <!--<button id='optionsBtn' type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal"><i class="fa fa-bars fa-2x"></i></button>-->
-    <div class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog">
-        
-          <!-- Modal content-->
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4 class="modal-title">Audio options</h4>
-            </div>
-            <div class="modal-body">
-              <input id='checkMusic' type="checkbox" value="" checked> Music<br>
-              <input id='checkEfx' type="checkbox" value="" checked> Sound Efects
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-          </div> 
-        </div>
-    </div>  
-    <section id="starter">
-          <div class="container">
+    <!--<div class="modal fade" id="myModal" role="dialog">-->
+    <!--    <div class="modal-dialog">-->
+    <!--      <div class="modal-content">-->
+    <!--        <div class="modal-header">-->
+    <!--          <button type="button" class="close" data-dismiss="modal">&times;</button>-->
+    <!--          <h4 class="modal-title">Audio options</h4>-->
+    <!--        </div>-->
+    <!--        <div class="modal-body">-->
+    <!--          <input id='checkMusic' type="checkbox" value="" checked> Music<br>-->
+    <!--          <input id='checkEfx' type="checkbox" value="" checked> Sound Efects-->
+    <!--        </div>-->
+    <!--        <div class="modal-footer">-->
+    <!--          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>-->
+    <!--        </div>-->
+    <!--      </div> -->
+    <!--    </div>-->
+    <!--</div>  -->
+   
+       <section data-role="page" id="starter">
+        <a href="#ranking">
+            <h1 class="title-small">Beer open challenge</h1>
+        </a>    
+      </section>
+      <section data-role="page" id="ranking">
+          <div id='play'><a href='#container'><img  src="images/PlayButton.png"></a></div>
+          <div class="container ui-content" data-role="main">
               <div class="row">
                   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                     <img id='taster' class="img-responsive" src='images/taster.png'>
-                  </div>
-                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                     <div id='play'><img  src="images/PlayButton.png"></div>
-                     Open the maximum number of bottles.
-                     The longer it takes the bigger will be the prize.
+                    <div class='board'>
+                      <p class='title'>Ranking of the day:</p>
+                      <div id='list'></div>
+                      <p class='title'>Your best:</p>
+                      
+                      <p><span id="yourBest" class='left'>0</span><span id="yourBestTime" class="right">0</span></li></p>
+                      
+                    </div>  
                   </div>
               </div>
           </div>   
     </section>
     
-    <section id="ranking">
-          <div class="container">
-              <div class="row">
-                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                     <div id='board'>
-                      Ranking of the day:
-                      <ol></ol>
-                      Your stats:
-                      <ul>
-                        <li>Today:</li>
-                        <li><span id="today">0</span><span id="todayTime" class="record">0</span></li>
-                        <li>your best:</li>
-                        <li><span id="yourBest">0</span><span id="yourBestTime" class="record">0</span></li>                       
-                      </ul>
-                     </div>
-                  </div>
-              </div>
-          </div>   
-    </section>
+
+    <section data-role="page" id="container">
+        <canvas id='game' width='1280' height='720'></canvas>
+    </section>  
+  
     
     
-  </div>
+
+    
+    
+    
   
 </body>
 </html>

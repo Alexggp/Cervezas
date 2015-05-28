@@ -1,38 +1,37 @@
 
-var startGame = function() {
-    Game.setBoard(0,new capaClear(0))
-    Game.setBoard(1,new TitleScreen("HOW MANY BOTTLES CAN YOU OPEN???", 
-                                    "ARE YOU READY??",
-                                    playGame));
+var readyGame = function() {
+    window.location.href ="#ranking";
+
 }
 
 
 var playGame = function() {
     //Añadidos el reloj y el marcador, si el marcador llega a 0, callback=startGame()
+    Game.setupDimensions();	
+    Game.setBoard(0,new capaClear(0))
     Game.setGame();   //puntuaciones a 0
     Game.setBoard(4,new Clock());
     Game.setBoard(2,new GamePoints());
     //Game.setBoard(3,new Coundown(endGame));
     barrelTime = setBarrelTime();
-    var board = new GameBoard();
+    
     //board.add(new Juice(401,201));
     
-  
+    var board = new GameBoard();
     board.add(new Beer(420,400));
     Game.setBoard(1,board);
+    Game.running=true;   //Semaforo del bucle Game.loop
+    Game.loop();            // iniciamos el bucle
     if (MusicOn) Sound.playGameSound('music', {loop: true, sound: 1})
 
     
 }
 var endGame = function(){
     if (MusicOn) Sound.stopGameSound('music');
-    Clock.stop=true;
-    //alert('record: '+Game.time/10+' segundos');
-    Game.boardsReset();
-    Game.setBoard(0,new capaClear(0))
-    Game.setBoard(1,new TitleScreen("GAME OVER!!!!", 
-                                    "ARE YOU READY???",
-                                    playGame));
+    Game.running=false;     //Detenemos el bucle
+    Clock.stop=true;        //Detenemos el reloj
+    window.location.href ="#ranking";
+    
 }
 
 var gameLoop = function(board){
