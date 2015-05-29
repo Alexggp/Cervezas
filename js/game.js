@@ -26,6 +26,7 @@ var endGame = function(){
     if (MusicOn) Sound.stopGameSound('music');
     Game.running=false;     //Detenemos el bucle
     Clock.stop=true;        //Detenemos el reloj
+    $('#showPoints').html(Game.points);
     window.location.href ="#ranking";
     
 }
@@ -36,9 +37,9 @@ var gameLoop = function(board){
     
         var even = _.find(board.objects, function(obj){ return obj.sprite == "bottle"; });
     	if (!even) {
-            var nextTrhowNumber = Math.floor((Math.random() * (6-1)) + 1);
+            var nextTrhowNumber = Math.floor((Math.random() * (5-1)) + 1);
             for (i=0; i<nextTrhowNumber; i++) {
-                Math.random() < 0.80 ? board.add(new Beer()) : newJuice(board);
+                Math.random() < 0.90 ? board.add(new Beer()) : newJuice(board);
             }
         }
         if (Game.time>Game.parcialTime) {
@@ -47,20 +48,20 @@ var gameLoop = function(board){
                 Game.parcialVel+=0.25;  
             }
         }
-        //if (Game.time>barrelTime) {
-        //    board.add(new Barrel());
-        //    barrelTime= setBarrelTime();
-        //}
+        if (Game.time>barrelTime) {
+            board.add(new Barrel());
+            barrelTime= setBarrelTime();
+        }
 }
 
 
 var newJuice = function(board){
     var type = Math.floor(Math.random() * (3));
-    //board.add(new Juice(type));
-    board.add(new Beer())
+    board.add(new Juice(type));
+    //board.add(new Beer())
 }
 
 var setBarrelTime=function(){
-    var interval= Math.floor((Math.random() * (200 -100)) + 100)*Game.canvasMultiplier;
+    var interval= Math.floor((Math.random() * (300 -150)) + 150)*Game.canvasMultiplier;
     return Game.time+interval;
 }

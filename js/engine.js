@@ -87,48 +87,35 @@ var Game = new function() {
 	
 	this.setupMobile = function() {
 
-
  	      var container = document.getElementById("container");
             // Comprobar si el browser soporta eventos táctiles
             hasTouch =  !!('ontouchstart' in window);
 			// Ancho y alto de la ventana del browser
-
 
 	      if(hasTouch) { this.mobile = true;}
 
 	      // Salir si la pantalla es mayor que cierto tamaño máximo o si no
 	      // tiene soporte para eventos táctiles
 	      if(screen.width >= 1280 || !hasTouch) { this.mobile=false; }
-	      
-	      
 	}
 	this.setupDimensions= function(){
-
-		
-		var w = $(window).width();
-		var h = $(window).height();
+	
+		var w = window.innerWidth;
+		var h = window.innerHeight;
 	    
-		console.log('setup',w,h);
-
 		this.canvas.style.position='absolute';
         this.canvas.style.left="0px";
         this.canvas.style.top="0px";
-
-		
+	
 		this.canvas.width=w;
 		this.canvas.height=h;
 		this.width=this.canvas.width;
         this.height=this.canvas.height;
-        
 		
 		this.canvasMultiplier=this.canvas.width/1280;
-
 		
 		$('#game').height(h);
 		$('#game').width(w);
-		//$('#container').height(h);
-		//$('#containers').width(w);
-          
     };
 	
 

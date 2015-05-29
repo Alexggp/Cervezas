@@ -56,12 +56,13 @@
     <!--</div>  -->
    
        <section data-role="page" id="starter">
-        <a href="#ranking">
             <h1 class="title-small">Beer open challenge</h1>
-        </a>    
       </section>
       <section data-role="page" id="ranking">
-          <div id='play'><a href='#container'><img  src="images/PlayButton.png"></a></div>
+        <div class="row row-centered">
+          <div id='play' class="col-lg-4 col-md-4 col-sm-4 col-xs-4 col-centered"><a href='#container'><img class="img-responsive" src="images/PlayButton.png"></a></div>
+          <div id='points' class="col-lg-6 col-md-6 col-sm-6 col-xs-6 board col-centered" > You've got <span id="showPoints">0</span> points</div>
+        </div>  
           <div class="container ui-content" data-role="main">
               <div class="row">
                   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">

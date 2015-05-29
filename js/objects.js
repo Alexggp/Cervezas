@@ -44,8 +44,9 @@ var Beer = function(xx,yy) {
     this.vy = - Math.floor((Math.random() * (500-300) ) + 300)*Game.canvasMultiplier;
     this.G = Math.floor((Math.random() * (7 -3)) + 3)*Game.canvasMultiplier;
     
-    
-    this.vx = Math.floor((Math.random() * (650-400)) + 400) * this.d*Game.canvasMultiplier*Game.parcialVel;
+    var factor = Game.canvasMultiplier;
+
+    this.vx = Math.floor((Math.random() * (650-400)) + 400) * this.d*factor*Game.parcialVel;
     
  
     this.step = function(dt) {    
@@ -175,7 +176,7 @@ var Juice = function(type) {
                 this.captured=true;
                 this.board.remove(this);
                 if (AudioOn) Sound.playGameSound('splash', {loop: false, sound: 1})
-                this.board.add(new Splash(this.x,this.y));
+                this.board.add(new Splash(this.x,this.y,this.frame));
             }
             
     }
@@ -189,9 +190,9 @@ Juice.prototype.type = JUICE_OBJECT;
 var Splash = function(ox,oy,frame) {
 
     this.sprite="splash";
-    (ox-200)
-    this.x=ox-200;
-    this.y=oy-150;
+
+    this.x=ox-(200*Game.canvasMultiplier);
+    this.y=oy-(150*Game.canvasMultiplier);
     this.w=500*Game.canvasMultiplier;
     this.h=500*Game.canvasMultiplier;
 
@@ -200,7 +201,7 @@ var Splash = function(ox,oy,frame) {
 		ctx.drawImage(Game.imgs[frame],
 			  0, 0,
 			  640, 528,
-			  this.x, this.y,
+			  Math.floor(this.x), Math.floor(this.y),
 			  this.w, this.h);
     }
 
@@ -226,18 +227,18 @@ var Barrel = function(xx,yy) {
     
     // haremos aleatoria la altura, de manera que nunca sobrepase el limite superior
     // y que salgan de la mitad inferior de la pantalla
-    this.y = Math.floor((Math.random() * (2*Game.height/3 - Game.height/3)) + (Game.height/3));
+    this.y = 2*Game.height/3;
 
     // vy marca el margen de distancia de subida, al que se le suma this.G
     // cuando vy deja de ser negativo, el objeto dejara de subir y caera.
     //Game.canvasMultiplayer ajusta la velocidad al tamaño de la pantalla, Game.parcialVel acelera la velocidad en funcion del tiempo
     
     
-    this.vy = - 900*Game.canvasMultiplier;
+    this.vy = - 900*Game.canvasMultiplier*this.d;
     this.G = 15*Game.canvasMultiplier;
     
     
-    this.vx = 1200*Game.canvasMultiplier;
+    this.vx = 1500*Game.canvasMultiplier;
     
  
     this.step = function(dt) {    

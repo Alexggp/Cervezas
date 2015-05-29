@@ -73,12 +73,13 @@ $(document).ready(function() {
     //
 
     $(document).on("pagebeforehide","#container",function(){
-            endGame();
+        endGame();
     });
     $( window ).resize(function() {
         Game.setupDimensions();
     });
     
+
 });
 
 
