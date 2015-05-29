@@ -1,13 +1,11 @@
 
 var readyGame = function() {
     window.location.href ="#ranking";
-
 }
 
 
 var playGame = function() {
     //Añadidos el reloj y el marcador, si el marcador llega a 0, callback=startGame()
-    Game.setupDimensions();	
     Game.setBoard(0,new capaClear(0))
     Game.setGame();   //puntuaciones a 0
     Game.setBoard(4,new Clock());
@@ -18,13 +16,11 @@ var playGame = function() {
     //board.add(new Juice(401,201));
     
     var board = new GameBoard();
-    board.add(new Beer(420,400));
+    board.add(new Beer(42,40));
     Game.setBoard(1,board);
     Game.running=true;   //Semaforo del bucle Game.loop
     Game.loop();            // iniciamos el bucle
     if (MusicOn) Sound.playGameSound('music', {loop: true, sound: 1})
-
-    
 }
 var endGame = function(){
     if (MusicOn) Sound.stopGameSound('music');
@@ -46,7 +42,6 @@ var gameLoop = function(board){
             }
         }
         if (Game.time>Game.parcialTime) {
-            //console.log(Game.parcialVel)
             Game.parcialTime+=Game.parcialTimeFactor;
             if (Game.parcialVel<Game.maxpacialVel) {
                 Game.parcialVel+=0.25;  

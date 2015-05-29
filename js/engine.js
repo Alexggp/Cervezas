@@ -59,9 +59,10 @@ var Game = new function() {
 		// segundos transcurridos
 		var dt = 10 / 1000;
 	
+
+	
 		// Para cada board, de 0 en adelante, se 
 		// llama a su método step() y luego a draw()
-		console.log(Game.running)
 		if(Game.running==true){
 			for(var i=0,len = boards.length;i<len;i++) {
 				if(boards[i]) { 
@@ -102,9 +103,12 @@ var Game = new function() {
 	      
 	}
 	this.setupDimensions= function(){
+
 		
-	    w = window.innerWidth, h = window.innerHeight;
-		//console.log(w,h);
+		var w = $(window).width();
+		var h = $(window).height();
+	    
+		console.log('setup',w,h);
 
 		this.canvas.style.position='absolute';
         this.canvas.style.left="0px";
@@ -122,6 +126,8 @@ var Game = new function() {
 		
 		$('#game').height(h);
 		$('#game').width(w);
+		//$('#container').height(h);
+		//$('#containers').width(w);
           
     };
 	
@@ -210,8 +216,6 @@ var GameBoard = function() {
 			this.finalizeRemoved();
 			
 			gameLoop(this);
-		
-
 		
     };
 
@@ -479,7 +483,6 @@ var Sound = new function(){
 		src.connect(gain_node);
 		 
 		gain_node.connect(Game.audio_ctx.destination);
-		//console.log(gain_node);
 	   
 		if (typeof opt.sound !== 'undefined')
 		  gain_node.gain.value = opt.sound;

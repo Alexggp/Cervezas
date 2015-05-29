@@ -37,7 +37,6 @@ $(document).ready(function() {
 
         var even = _.find(ranking, function(obj){ return obj.name == data.user;});
         if (even) {           
-            console.log(ranking.length-ranking.indexOf(even))
             var x=ranking.length-ranking.indexOf(even);
             var n=2
             if (x<3) {
@@ -72,6 +71,15 @@ $(document).ready(function() {
     //    MusicOn = this.checked ? true : false;
     //});
     //
-    
+
+    $(document).on("pagebeforehide","#container",function(){
+            endGame();
+    });
+    $( window ).resize(function() {
+        Game.setupDimensions();
+    });
     
 });
+
+
+

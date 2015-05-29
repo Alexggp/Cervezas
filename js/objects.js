@@ -79,6 +79,12 @@ var Beer = function(xx,yy) {
                 Game.points++;
                 Game.parcial+=0.5/Game.parcialVel;
                 if (AudioOn) Sound.playGameSound('beer_open', {loop: false, sound: 0.5})
+                
+                
+                
+                
+                
+                
                 this.board.add(new Chapa(this.x,this.y,this.vx));   
             }
             if (this.captured && this.frame<2){ //si capturamos la botella, secuencia de imagenes de descorche
@@ -159,7 +165,6 @@ var Juice = function(type) {
                 this.board.remove(this);      // lo eliminamos de la lista de objetos del board                  
             }
             var underSplash= this.board.collide(this,SPLASH_OBJECT);
-            //console.log(underSplash);
             if(mouse.checkMouse(this) && !this.captured && !underSplash){   
                 this.captured=true;
                 this.board.remove(this);
