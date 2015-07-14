@@ -1,0 +1,304 @@
+
+
+DOCUMENTACIÓN JUEGO CERVEZAS de Alejandro García-Gasco Pérez
+============================================================
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+============================================================
+
+
+
+El juego está creado integramente en html5 se incrusta en la vista igual que podría hacerse con cualquier otro elemento html, por ejemplo una imagen.
+
+
+
+
+index.html
+==========
+
+Todo el dom html está contenido en el archivo "index.html". El juego corre en en la etiqueta canvas, id='game'
+Las diferentes secciones del dom tienen data-rol="page" para ser manejadas con jquery-mobile como paginas independientes.
+Hay que tener especial cuidado con las cabeceras para mobile-web-app:
+  <meta name="viewport" content="width=device-width, initial-scale=1.0 minimum-scale=1.0, maximum-scale=1.0"">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
+
+
+base.css
+========
+
+Contiene las reglas css
+
+
+
+js/engine.js
+============
+
+
+Documento donde se define la estructura del juego
+
+ Objeto Game 
+ -----------
+
+    Maneja los parametros iniciales de la partida.
+    - function initialize: inicia la partida poniendo todas las variables a cero y llamando a los metodos correspondientes para cargar imagenes y sonido.
+                           Cuando todo ha cargado, llama al callback
+    - var boards: array donde se almacenara las direfentes capas canvas del juego.
+    - function setGame: inicializa el contador de puntos y de tiempo a cero, asi como los contadores parcials de velocidad y tiempo, que servirán para determinar
+                        la dificultad del juego.
+    - function loop:   inicia el bucle de juego.  (llama a draw y step)
+    - function setBoard: función para añadir nuevas capas.
+    - function setupMobile: comprueba si estamos en un dispositivo tactil.
+    - function setupDimensions: adapta el juego al tamaño de la pantalla, a traves de la variable canvasMultiplier adapta los objetos y velocidades.
+    
+ Objeto GameBoard
+ ----------------
+
+    GameBoard implementa un tablero de juego que gestiona la interacción entre los elementos del juego dispuestos dentro de él.
+    Cada elemento tendrá una interfaz step() y draw() para que puedan ser mostrados desde el bucle principal del juego (Game.loop).
+    
+    - var objects: Colección de objetos contenidos por este tablero
+    - var splashes: Colección de splashes contenidos por este tablero, splashes: coleccion de imagenes.
+    - function add: Añade objetos a la variable objects.
+    
+    Los siguientes 3 métodos gestionan el borrado. Cuando un board está siendo recorrido (en step()) podría eliminarse algún objeto, lo que interferiría
+    en el recorrido. Por ello borrar se hace en dos fases: marcado, y una vez terminado el recorrido, se modifica objects.
+    
+    - function remove: Marcar un objeto para borrar
+    - function resetRemoved: Inicializar la lista de objetos pendientes de ser borrados
+    - function finalizeRemoved: Elimina de objects los objetos pendientes de ser borrados
+    
+    - function iterate y function detect, sirven para aplicar funciones a diferentes objetos.
+    - function step y function draw, ejecutan step y draw de todos los objetos del tablero respectivamente. Llamado por el bucle de juego (Game.loop)
+    
+    - function collide: utiliza function overlap y function detect para determinar, en este caso, si un objeto está bajo un objeto de tipo type.
+    
+ Objeto SpriteSheet
+ ------------------
+    Se encarga de gestionar el mapa de imagenes de objeto, spritesheet. Es llamado por el constructor Sprite
+    
+
+ Objeto Mouse
+ ------------
+    Gestiona los eventos del mouse, para jugar en dispositivos no táctiles.
+    - function checkMouse: devuelve true si hemos pinchado dentro del objeto que se le pasa por parametro.
+    
+    
+ Objeto touch
+ ------------
+    Gestiona los eventos touch, para jugar en dispositivos táctiles.
+    - function checkTouch: devuelve true si hemos tocado dentro del objeto que se le pasa por parametro.
+    
+    
+ supportsOrientationChange
+ --------------------------------
+    Listener para registrar los cambios de orientación en la pantalla. Cada vez que cambiamos la orientación llama a Game.setupDimensions()
+    
+    
+ Objeto Sound
+ ------------
+    Gestiona el audio del juego. ACTUALMENTE DESACTIVADO por problemas de compatibilidad con iphone. (variable AudioOn y MusicOn son undefined)
+    Actualmente contiene unicamente tres sonidos.
+    var audio={
+                beer_open:"audio/beer_open.mp3",
+                splash:"audio/splash.mp3",
+                music:"audio/music.mp3"
+		}
+    Se activa un sonido de la siguiente manera:
+    if (AudioOn) Sound.playGameSound('beer_open', {loop: false, sound: 0.5})   ---> loop: sonido finito o que se repita, sound: volumen. (0-1)
+    
+    
+    
+js/objets.js
+============
+    
+    Documento donde se definen los diferentes objetos con los que vamos a jugar.
+    
+    - variable sprites: diccionario que marca la posición de la imagen de cada objeto en el mapa de sprites
+        la variable frames dentro de sprites, nos indica el número de frames que tiene cada objeto, para crear secuencias de imagenes (descorchar botella)
+    
+    var SPLASH_OBJECT       =   1,                  Define los diferentes tipos de objetos que pueden entrar en la funcion collide del tablero
+        JUICE_OBJECT        =   2,                  
+        BARREL_OBJECT       =   4;
+    
+
+    
+    A continuación se definen los objetos con los que interactuaremos en el juego:
+        - Beer          Botellines de cerveza que tenemos que capturar
+        - Chapa         Chapa que se desprende al abrir el botellín
+        - Juice         Zumos que debemos intentar no tocar
+        - Splash        Mancha de zumo que aparece al explotar un zumo
+        - Barrel        Barril que aparece cada x tiempo y que vale más puntos
+    
+
+    Cada uno de los objetos debe tener siempre una función DRAW y una función STEP
+    
+    - setup: dotara al objeto de las propiedades de su key correspondiente en la variable global sprites explicada lineas arriba
+    
+    - función Draw: se encarga de pintar el objeto en la nueva posición a cada vuelta del bucle (Game.loop). Se añade al objeto al extenderlo con el
+                    objeto Sprite de js/engine.js.    ej-> Beer.prototype = new Sprite();
+
+    - función Step: se realizarán los movimientos del objeto en función del tiempo (dt), es decir, por cada vuelta del bucle.
+                Aquí en cada instante de tiempo se cambiarán las coordenadas del objeto en la pantalla, se comprobará si hemos pinchado en el o si ha
+                salido de la pantalla, y realizamos las acciones que deban realizarse en cada momento:
+                    
+                    - ejemolo: Beer, si se pincha se descorcha y se suman puntos, si sale de la pantalla se acaba la partida.
+            
+                
+                
+                En algunos casos, como en la botella al descorcharse habrá una transición de frames, para crear una secuencia de imagenes,
+                de la siguiente forma:
+                    
+                    if (this.captured && this.frame<2){ //si capturamos la botella, secuencia de imagenes de descorche
+                        this.frame = Math.floor(this.subFrame++ /5);
+                    }
+                
+                Todos los factores que influyen en el movimiento del objeto en la etapa Step deben ser declarados anteriormente
+                
+                Para añadir un objeto al tablero, por ejemplo:
+                        this.board.add(new Chapa(this.x,this.y,this.vx));   
+                    
+                    donde "this" hace referencia al GameBoard del objeto. Y se le pasan los parámetros que sean requeridos por cada objeto.
+                    En el caso de los objetos "beer" o "jucie" los puntos x e y de origen se determinan dentro del objeto, por el contrtario en
+                    las chapas, los puntos x e y deben ser los de la cerveza descorchada con alguna rectificación y vx de la cerveza para que la
+                    caida de la chapa se acompañe con un movimiento horizontal y sea más realista.
+                    
+                    En el caso del "juice" y el "splash" el atributo frame hace referencia al tipo de zumo, ya que hay 3 colores: verde, naranja y rojo.
+                    
+                    Los parametros de salida de cada objeto con los que podemos interactuar, direccion, velocidad, punto de partida, etc, son parcialmente
+                    aleatorios, es decir, aleatorios dentro de unos rangos determinados.
+                    
+                
+                
+
+js/layers.js
+============
+
+    Documento donde se definen las capas que se pintarán superpuestas en nuestra etiqueta canvas.
+    El orden de aparición será asignado  con Game.setBoard(numero, new NombreDeLaCapa) al añadirla al juego.
+    
+    
+    La capa principal, será donde se pintarán los objetos, que no esta definida aquí. Se trata del tablero de juego
+    GameBoard. Se pintara primero la capaClear, que hará de fondo, encima GameBoard con los objetos y despues el resto de capas.
+    
+    
+ capaClear
+ ---------
+    Capa fundamenta, de color negro y tamaño igual al rectángulo de juego, en cada vuelta del bucle pinta la pantalla de negro borrando el contenido
+    de la anterior vuelta, creando efecto de movimiento. Sin esta capa, cada objeto que se mueve dejaría estela. 
+    
+ TitleScreen
+ -----------
+    ACTUALMENTE NO SE USA
+    Con la misma profundidad que capaClear, crea una pantalla donde se mostraba el título del juego.
+    Contiene un contador, que al finalizar llama a la función Callback, que sería iniciar el juego o jugar de nuevo.
+    
+ Clock
+ -----
+    Muestra el marcador del tiempo, muestra la variable Game.time tiene una función contador que aumenta los segundos.
+
+ GamePoints
+ ----------
+    Muestra el conteo de los puntos, muestra la variable Game.points.
+    
+
+
+js/game.js
+==========
+    
+    En este documento se maneja el flujo de juego, cuando se inicia, como y cuando salen los objetos, como se acaba etc.
+    
+    - function playGame:  Añade las capas del juego, capaCelar, GameBoeard, Clock y GamePoints.
+                          Llama a Game.setGame() y Game.loop() iniciando así la partida.
+                          Añade la primer objeto al tablero, que será un objeto tipo "beer".
+                          Pone en funcionamiento la música, siempre y cuando la variable global MuiscOn sea "true".
+    
+    - function endGame: Detiene la música, el bucle del juego y el reloj. Muestra los puntos obtenidos en el div correspondiente
+                        Y coloca la aplicación web en la página de jquery-mobile donde tenemos alojado el ranking del juego.
+
+    - function gameLoop: Es el bucle de flujo de juego, se ejecuta en cada paso "step" del GameBoard, por lo tanto se ejecuta en cada
+                         vuelta del bucle principal del juego, Game.loop.
+                         
+                         Comprueba si existe algún objeto tipo "beer" actualmente en pantalla, si no hay ninguno realiza un lanzamiento nuevo.
+                         Este lanzamiento puede ser de entre 5 y 1 objetos. Además, el objeto lanzado podrá ser en cada caso un tipo "beer" o
+                         un tipo "juice". Con una probabilidad del 90% de que sea del tipo "beer".
+                         
+                         Comprueba si el ha pasado el intervalo de tiempo de juego transcurrido hasta llegar a Game.parcialTimeFactor, variable
+                         que designa cada cuanto tiempo aumentamos la velocidad del juego. En caso positivo, aumentará la velocidad del juego y
+                         volverá a determinar un nuevo tiempo parcial para la subida de velocidad.
+                         
+                         Comprueba tambien si ha pasado el intervalo de tiempo asignado para la salida del barril. Si es así añadirá un objeto
+                         "barrel" al tablero y volverá a calcular un nuevo punto en el tiempo para lanzar un nuevo barril.
+                         
+    - function newJuice: Llamado en gameLoop para añadir un nuevo objeto "juice".
+                         Decide de que color va a ser el zumo de forma aleatoria y lo añade al GameBoard. 
+                          
+    - function setBarrelTime: Crea un nuevo intervalo cada vez que se lanza un barril, que determina cuando será lanzado el siguiente de forma
+                                semialeatorio.                     
+    
+    
+    
+    
+js/pregame.js
+=============
+
+    Este documento maneja como es la presentación del juego, la transición de pantallas desde que entramos en la url hasta que empezamos a jugar.
+    Lo primero que hará será llamar a Game.initialize para empezar a cargar los contenidos del juego. Mientras estos se cargan, se mostrara una
+    imagen estática de portada, que cambiará al llamarse al callback de Game.initialize que en este caso es la función readyGame.
+
+
+
+    - function readyGame: Coloca la aplicación web en la página de jquery-mobile donde tenemos alojado el canvas del juego.
+    
+    Se añade un listener para el botón play, para que el usuario inicie el juego que llama a playGame() de game.js
+    
+    Luego se implementa un ranking con datos ficticios, con una función para que el ranking solo muestre 5 jugadores. El usuario actual y los dos
+    anteriores y posteriores del ranking. Contempla los casos en que el usuario es ultimo, penúltimo, segundo o primero del ranking.
+    Al ser ficticio, el ranking no se actualiza con las puntuaciones conseguidas en la partida, ni hay funciones implementadas para ello.
+    
+    
+    AudioOn y MusicOn, variables globales que controlan si hay audio en la app.
+    
+    
+    La siguiente función ejecuta endGame() cada vez que el usuario abandona la pagina del juego. Importante para que no siga corriendo el juego  si hemos
+    retrocedido en el buscador a la página del ranking:
+    
+    $(document).on("pagebeforehide","#container",function(){
+        endGame();
+    });
+    
+    Por último, un listener para lanzar Game.setupDimensions si la pantalla cambia de tamaño.
+    
+    
+    
+    
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+    Bibliotecas utilizadas:
+    
+        Para el funcionamiento del juego:
+          js/jquery-1.10.2.js
+          js/underscore.js
+          
+        Para la maquetación de la etiqueta canvas:
+          jquery.mobile-1.4.5
+          bootstrap
+          
+    Audios utilizados:
+        audio/beer_open.mp3
+        audio/music.mp3
+        audio/splash.mp3
+        
+    Imagenes utilizadas:
+        images/background.png
+        images/PlayButton.png
+        images/splash_green.png
+        images/splash_orange.png
+        images/splash_red.png
+        images/sprites.png
+        images/taster.png        
+        
+    Fuentes utilizadas:
+        images/Bangers.ttf
+        images/digital-7.ttf
+        

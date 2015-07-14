@@ -1,5 +1,13 @@
 $(document).ready(function() {
+    alert("Put your phone horizontally for a better gaming experience");
+    
+    
+    var readyGame = function() {
+	window.location.href ="#ranking";
+    }
 
+    
+    
     Game.initialize("game",sprites,readyGame);
 
 	$( "#play img" ).click(function() {
