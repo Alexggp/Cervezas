@@ -302,3 +302,13 @@ js/pregame.js
         images/Bangers.ttf
         images/digital-7.ttf
         
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Para ejecutarlo, servirlo como cualquier html, por ejemplo con el simple server de python, escribiendo en consola:
+	
+	python -m http.server 
+
+O abrirlo directamentamente en el browser, para que funcione hay que desactivar la carga del audio, comentando la linea 33 de js/game.js
+
+	Sound.init() en Game.initialize()
